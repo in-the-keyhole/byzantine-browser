@@ -1,0 +1,24 @@
+{
+  "name": "khs-block-browser",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  },
+  "devDependencies": {
+    "react-scripts": "1.1.4",
+    "react-bootstrap": "^0.31.0",
+    "react-bootstrap-table": "^3.5.1",
+    "react-confirm-alert": "^1.0.7",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "axios": "^0.16.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
