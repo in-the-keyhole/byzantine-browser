@@ -17,6 +17,7 @@ limitations under the License.
 import React, { Component } from 'react';
 import axios from 'axios';
 
+
 class SelectChannel extends Component {
 
     constructor(props) {
@@ -41,7 +42,7 @@ class SelectChannel extends Component {
     
         var base = '';
         if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4000';
+           base = 'http://localhost:4001';
         }
 
         console.log('Accessing channels');
@@ -53,9 +54,14 @@ class SelectChannel extends Component {
             data: self.state
         }).then(function(res) {
             console.log(res.data);
-          
+            
+
             if (res.data && res.data !== '') {
-              window.location = ('/channel/'+self.state.channelid);
+        
+              localStorage.setItem("blocks",res.data.height.low-1);
+              window.location = ('/channel/'+self.state.channelid+'/'+(res.data.height.low-1));
+              
+             
             } else {
                 self.error = true;
                 self.setState({loginError: 'Error Accessing Channel'});
@@ -74,13 +80,13 @@ class SelectChannel extends Component {
 
     render() {
 
+        let err = <div></div>;
         if (this.error) {
-         let alert =  <div class="alert alert-danger" role="alert">
-         A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-       </div>; }
-       else  {
-           let alert = "<div></div>";
-       }
+          err =  <div class="alert alert-danger" role="alert">
+         Channel not found...
+            </div>
+         }
+       
 
 
         return (
@@ -92,11 +98,12 @@ class SelectChannel extends Component {
               <p>Input Channel name to Browse</p>
               <form className="form" onSubmit={this.handleSubmit}>
               <p> <input type="text" class="form-control" name="channelid"  placeholder="Channel Id" onChange={this.handleInputChange}  />  </p>
-              {alert}
+               {err}
               <p class="lead">
               <button type="submit" class="btn btn-primary btn-lg">Browse</button>
               </p>
               </form>
+
 
         </div>
 

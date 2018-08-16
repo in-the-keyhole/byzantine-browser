@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import config from 'react-global-configuration';
+
 import {
   BrowserRouter,
   Switch,
@@ -19,7 +21,9 @@ import {
 import SelectChannel from './SelectChannel.js';
 import Channel from './channel/channel.js';
 
-
+config.set({foo:'hello',
+            baseurl: process.env.BASE_URL || 'http://localhost:4001'
+});
 
 class App extends Component {
   render() {
@@ -28,7 +32,7 @@ class App extends Component {
       <main>
       <Switch>
          <Route exact path='/' component={SelectChannel}/>
-         <Route exact path='/channel/:channelid' component={Channel}/>
+         <Route exact path='/channel/:channelid/:blocknumber' component={Channel}/>
       </Switch>
     </main> 
      );    
@@ -43,7 +47,7 @@ class App extends Component {
            <Navbar>
                <Navbar.Header>
                <Navbar.Brand>
-                   <a href="/">KHS Block Chain Browser&#123;for Hyperledger&#125;</a>
+                   <a href="/">KHS Blockchain Browser&#123;for Hyperledger&#125;</a>
                </Navbar.Brand>
                </Navbar.Header>
       

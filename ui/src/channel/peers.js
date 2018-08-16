@@ -34,7 +34,7 @@ class Peers extends Component {
         
         var base = '';
         if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4000';
+            base = 'http://localhost:4001';
         }
 
         console.log('Accessing channels');
@@ -47,7 +47,7 @@ class Peers extends Component {
         }).then(function(res) {
             
             var a = [];
-            a.push(res.data)
+            a.push(res.data);
             self.setState( {peers: a } );
 
         }).catch(function(err){
@@ -61,7 +61,7 @@ class Peers extends Component {
     render() {
 
         const listItems = this.state.peers.map((number) =>
-        <li> <h3> {number} </h3>  </li>
+        <li>  {number}   </li>
       );
 
         return (

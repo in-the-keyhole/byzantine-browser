@@ -17,7 +17,6 @@ limitations under the License.
 import React, { Component } from 'react';
 import axios from 'axios';
 
-
 class Info extends Component {
 
     constructor(props) {
@@ -36,7 +35,7 @@ class Info extends Component {
         
         var base = '';
         if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4000';
+            base = 'http://localhost:4001';
         }
 
         console.log('Accessing channels');
@@ -48,8 +47,19 @@ class Info extends Component {
             data: {channelid: self.channelid}
         }).then(function(res) {
             
+
+           // alert (JSON.stringify(res.data));
+            var json = JSON.parse(JSON.stringify(res.data));
+
+            var hash = "";
+            var bytes = json.currentBlockHash.buffer.data;
+            var count = bytes.length;
+            for(var index = 0; index < bytes.length; index += 1) {
+              hash += String.fromCharCode(bytes[index]);
+            }
     
-            self.setState( {info: JSON.stringify(res.data) } );
+            self.setState( {blocks: (json.height.low), currentBlockhash: hash } );
+           
 
         }).catch(function(err){
             self.setState({loginError: 'Error Accessing Channel'});
@@ -57,19 +67,21 @@ class Info extends Component {
 
       }
 
-
-
-
   
     render() {
+
+
         return (
             <div class="card">
             <div class="card-block">
               <h3 class="card-title">Blockchain Info</h3>
+
              
             </div>
-            <p class="card-text">Channel: {this.channelid} </p>
-            <p class="card-text">Info: {this.state.info} </p>
+            <p>Channel: {this.channelid} </p>
+            <p># Blocks: {this.state.blocks}</p>
+    
+            
           </div>
 
             ) 
