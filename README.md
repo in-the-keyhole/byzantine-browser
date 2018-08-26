@@ -25,9 +25,7 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
         loglevel: process.env.LOGLEVEL || "info",
         wallet_path: process.env.KEYSTORE || "../hfc-key-store",
         user_id: process.env.USERID || "PeerAdmin",
-        network_url: process.env.NETWORK_URL || "grpc://localhost:7051",
-        orderer_url : process.env.ORDERER_URL || "grpc://localhost:7050"
-        
+        network_url: process.env.NETWORK_URL || "grpc://localhost:7051"  
     }
 ```
 
