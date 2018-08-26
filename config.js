@@ -1,14 +1,27 @@
-var util = require('util');
-var path = require('path');
-var hfc = require('fabric-client');
+/** 
+Copyright 2018 Keyhole Software LLC
 
-var file = 'network-config%s.json';
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var env = process.env.TARGET_NETWORK;
-if (env)
-	file = util.format(file, '-' + env);
-else
-	file = util.format(file, '');
+    http://www.apache.org/licenses/LICENSE-2.0
 
-hfc.addConfigFile(path.join(__dirname, 'server', file));
-hfc.addConfigFile(path.join(__dirname, 'config.json'));
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+
+module.exports = {
+    port: process.env.PORT || 4001,
+    host: process.env.HOST || "localhost",
+    loglevel: process.env.LOGLEVEL || "info",
+    wallet_path: process.env.KEYSTORE || "../hfc-key-store",
+    user_id: process.env.USERID || "PeerAdmin",
+    network_url: process.env.NETWORK_URL || "grpc://localhost:7051",
+    orderer_url : process.env.ORDERER_URL || "grpc://localhost:7050"
+    
+}

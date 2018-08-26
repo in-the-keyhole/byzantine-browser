@@ -18,6 +18,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Octicon, {ArrowLeft, ArrowRight} from '@githubprimer/octicons-react';
 import { timingSafeEqual } from 'crypto';
+import {subscribeToBlocks} from '../SubscribeToBlocks.js';
+import {config} from '../Config.js';
 
 
 class Block extends Component {
@@ -31,6 +33,15 @@ class Block extends Component {
         this.prevClick = this.prevClick.bind(this);
         this.nextClick = this.nextClick.bind(this);
         this.numberofblocks = Number(localStorage.getItem("blocks"));
+
+        let self = this;
+        subscribeToBlocks(function(err,blocks) {
+          self.numberofblocks = Number(blocks)-1;  
+          localStorage.setItem("blocks",self.numberofblocks);
+          self.setState({ 
+            blocknumber: self.blocknumber
+          });
+        });
    
     }
 
@@ -38,17 +49,12 @@ class Block extends Component {
 
     componentDidMount() {
 
-        
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4001';
-        }
-
+    
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
             url:'/block',
-            baseURL: base,
+            baseURL: config.apiserver,
             data: {channelid: self.channelid, blocknumber: self.blocknumber}
         }).then(function(res) {
             
@@ -57,7 +63,7 @@ class Block extends Component {
             axios({// using axios directly to avoid redirect interceptor
                 method:'post',
                 url:'/blockhash',
-                baseURL: base,
+                baseURL: config.apiserver,
                 data: {number: json.header.number, prevhash: json.header.previous_hash, datahash: json.header.data_hash}
             }).then(function(results) {
 

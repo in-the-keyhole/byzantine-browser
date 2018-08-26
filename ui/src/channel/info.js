@@ -16,6 +16,9 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import {subscribeToBlocks} from '../SubscribeToBlocks.js';
+import {config} from '../Config.js';
+
 
 class Info extends Component {
 
@@ -24,7 +27,10 @@ class Info extends Component {
         super(props);
         this.channelid = props.channelid;
         this.state = { info: ''};
-   
+
+        subscribeToBlocks((err, blocks) => this.setState({ 
+            blocks: blocks 
+          }));
 
     }
 
@@ -33,17 +39,12 @@ class Info extends Component {
     componentDidMount() {
 
         
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4001';
-        }
-
         console.log('Accessing channels');
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
             url:'/blockinfo?channelid='+self.channelid,
-            baseURL: base,
+            baseURL: config.apiserver,
             data: {channelid: self.channelid}
         }).then(function(res) {
             
@@ -80,6 +81,7 @@ class Info extends Component {
             </div>
             <p>Channel: {this.channelid} </p>
             <p># Blocks: {this.state.blocks}</p>
+            
     
             
           </div>

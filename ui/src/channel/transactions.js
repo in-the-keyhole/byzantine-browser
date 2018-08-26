@@ -18,7 +18,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-
+import {config} from '../Config.js';
 
 class Transactions extends Component {
 
@@ -37,17 +37,12 @@ class Transactions extends Component {
 
     componentDidMount() {
 
-        
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4001';
-        }
 
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
             url:'/block',
-            baseURL: base,
+            baseURL: config.apiserver,
             data: {channelid: self.channelid, blocknumber: this.blocknumber}
         }).then(function(res) {
             

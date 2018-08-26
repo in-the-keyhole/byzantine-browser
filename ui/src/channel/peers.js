@@ -16,7 +16,7 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import {config} from '../Config.js';
 
 class Peers extends Component {
 
@@ -31,18 +31,12 @@ class Peers extends Component {
 
     componentDidMount() {
 
-        
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:4001';
-        }
-
         console.log('Accessing channels');
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
             url:'/peers',
-            baseURL: base,
+            baseURL: config.apiserver,
             data: {channelid: self.channelid}
         }).then(function(res) {
             

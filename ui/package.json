@@ -16,7 +16,8 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-scripts": "1.1.4",
-    "react-table": "^6.8.6"
+    "react-table": "^6.8.6",
+    "socket.io-client": "^2.1.1"
   },
   "scripts": {
     "start": "PORT=8080 react-scripts start",
