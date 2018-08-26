@@ -4,7 +4,10 @@ KHS Blockchain Browser
 
 React/Node.js web application that allows ledger channel blockchains in Hyperledger Fabric to be browsed and searched.
 
+
 ## Installation 
+
+`Prerequisites:` Node.js 
 
 1. Clone repo
 2. Install Server and UI javascript modules 
