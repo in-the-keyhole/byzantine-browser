@@ -33,6 +33,7 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
 
 Here's an example public/private and user file in the `hfc-key-store` directory. 
 
+![](image/keystore.png)
 
 4. Start the Api Server and UI server with the following commands 
 
