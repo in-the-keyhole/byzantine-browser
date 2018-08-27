@@ -6,10 +6,9 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
 
 ![](images/khs-block-browser.png)
 
-
 ## Installation 
 
-`Prerequisites:` Node.js 
+`Prerequisites:` Node.js and access to  HyperLedger Fabric network
 
 1. Clone repo
 2. Install Server and UI javascript modules 
@@ -21,7 +20,7 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
     $ cd ..
 ```
 
-3. Modify the `config.js`,  so that the `network_url` property points to a peer node address and an admin `USERID` property references an admin user and public/private keys located in the `hfc-key-store` folder.
+3. The current keystore has credentials for the HyperLedger example networks. You can access  other networks can be supplied by  Modify the `config.js`,  so that the `network_url` property points to a peer node address and an admin `USERID` property references an admin user and public/private keys located in the `hfc-key-store` folder.
 
 ```
     module.exports = {
