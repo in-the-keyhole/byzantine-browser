@@ -20,6 +20,7 @@ import {
 
 import SelectChannel from './SelectChannel.js';
 import Channel from './channel/channel.js';
+import Metrics from './metrics/metrics.js';
 
 config.set({foo:'hello',
             baseurl: process.env.BASE_URL || 'http://localhost:4001'
@@ -33,6 +34,7 @@ class App extends Component {
       <Switch>
          <Route exact path='/' component={SelectChannel}/>
          <Route exact path='/channel/:channelid/:blocknumber' component={Channel}/>
+         <Route exact path='/metrics/:channelid/:blocknumber' component={Metrics}/>
       </Switch>
     </main> 
      );    
@@ -51,7 +53,6 @@ class App extends Component {
                </Navbar.Brand>
                </Navbar.Header>
       
-
                
            </Navbar>
            </div>

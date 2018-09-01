@@ -123,7 +123,7 @@ class Block extends Component {
               <h3 class="card-title">Block </h3>
              
             </div>
-            <p> <b>Number:</b> {pre}  {number} {next}  </p>
+            <p> <b>Number:</b> {pre}  {number} {next} </p>
             <p> <b>Type:</b> {this.state.type} </p>
             <p> <b>Block Hash:</b> {this.state.hash} </p>
             <p> <b>Previous Hash:</b> {this.state.previousHash} </p>

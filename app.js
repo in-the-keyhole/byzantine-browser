@@ -32,6 +32,7 @@ var peers = require('./app/peers.js');
 var blockinfo = require('./app/blockinfo.js');
 var block = require('./app/block.js');
 var appconfig = require('./config.js');
+var chaincodes = require('./app/chaincodes.js');
 
 
 var hfc = require('fabric-client');
@@ -156,6 +157,22 @@ app.post('/blockhash', function (req, res) {
 			res.send(message);
 		});
 });
+
+
+// get block hash
+app.post('/chaincodes', function (req, res) {
+	logger.debug('================ Chaincodes ======================');
+
+	var channelid = req.body.channelid;
+
+	chaincodes.getChaincodes(channelid)
+		.then(function (message) {
+			res.send(message);
+		});
+});
+
+
+
 
 
 

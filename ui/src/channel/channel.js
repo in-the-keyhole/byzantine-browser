@@ -28,10 +28,15 @@ class Channel extends Component {
         super(props);
         this.channelid = this.props.match.params.channelid;
         this.blocknumber = this.props.match.params.blocknumber;
-
+        this.metrics = this.metrics.bind(this);
         this.state = { channelid: ''};
       
+    }
 
+
+    metrics(e) {
+       e.preventDefault();
+       window.location = ('/metrics/'+this.channelid+'/'+this.blocknumber);
     }
 
   
@@ -39,6 +44,9 @@ class Channel extends Component {
         return (
            
             <div className="container">
+                <div className="row">
+                    <div className="col-md-12"> <button type="button" onClick={this.metrics} class="btn btn-primary btn-sm pull-right">Metrics</button>   </div>
+                </div>
                 <div className="row">
                     <div className="col-md-6"> <Block channelid={this.channelid} blocknumber={this.blocknumber} />  </div>  
                     <div className="col-md-3"> <Info channelid={this.channelid} />  </div>  
