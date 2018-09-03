@@ -2,7 +2,8 @@
 KHS Blockchain Browser
 
 
-React/Node.js web application that allows ledger channel blockchains in Hyperledger Fabric to be browsed and searched.
+React/Node.js web application that allows Hypeledger 
+Blockchain networks to be browsed and realtime actitity observed.
 
 ![](images/khs-block-browser.png)
 
@@ -10,7 +11,7 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
 
 ## Requirements
 * [Node](https://nodejs.org/en/download/) 8.9.x
-* [Python](https://www.python.org/downloads/) 2.7+ (v3+ not supported)
+* `Windows OS Only` - [Python](https://www.python.org/downloads/) 2.7+ (v3+ not supported)
 * access to HyperLedger Fabric network.  Example: [khs-lab-results-blockchain](https://github.com/in-the-keyhole/khs-lab-results-blockchain)
 
 Note: Two useful tools for managing node and python versions are [nvm](https://github.com/creationix/nvm) and [pyenv](https://github.com/pyenv/pyenv)
