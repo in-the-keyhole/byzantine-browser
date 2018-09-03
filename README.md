@@ -6,12 +6,19 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
 
 ![](images/khs-block-browser.png)
 
+
+
+## Requirements
+* [Node](https://nodejs.org/en/download/) 8.9.x
+* [Python](https://www.python.org/downloads/) 2.7+ (v3+ not supported)
+* access to HyperLedger Fabric network.  Example: [khs-lab-results-blockchain](https://github.com/in-the-keyhole/khs-lab-results-blockchain)
+
+Note: Two useful tools for managing node and python versions are [nvm](https://github.com/creationix/nvm) and [pyenv](https://github.com/pyenv/pyenv)
+
 ## Installation 
-
-`Prerequisites:` Node.js and access to  HyperLedger Fabric network
-
 1. Clone repo
 2. Install Server and UI javascript modules 
+
 
 ```
     $ npm install 
@@ -20,7 +27,7 @@ React/Node.js web application that allows ledger channel blockchains in Hyperled
     $ cd ..
 ```
 
-3. The current keystore has credentials for the HyperLedger example networks. You can access  other networks can be supplied by  Modify the `config.js`,  so that the `network_url` property points to a peer node address and an admin `USERID` property references an admin user and public/private keys located in the `hfc-key-store` folder.
+3. The current keystore has credentials for the HyperLedger example networks. You can access other networks by modifying the `config.js`,  so that the `network_url` property points to a peer node address and an admin `USERID` property references an admin user and public/private keys located in the `hfc-key-store` folder.
 
 ```
     module.exports = {
@@ -45,7 +52,9 @@ Here's an example public/private and user file in the `hfc-key-store` directory.
     $ npm start 
 ```
 
-UI will open on port `https://localhost:8080` by default, you can change by editing the `./ui/package.json` file.     
+5. Browse to [`http://localhost:8080`](http://localhost:8080)
+
+Note: to change the port, edit file `./ui/package.json`
 
 
 
