@@ -10,7 +10,7 @@ Blockchain networks to be browsed and realtime actitity observed.
 
 
 ## Requirements
-* [Node](https://nodejs.org/en/download/) 8.9.x
+* [Node](https://nodejs.org/en/download/) 8.9.x or above
 * `Windows OS Only` - [Python](https://www.python.org/downloads/) 2.7+ (v3+ not supported)
 * access to HyperLedger Fabric network.  Example: [khs-lab-results-blockchain](https://github.com/in-the-keyhole/khs-lab-results-blockchain)
 
