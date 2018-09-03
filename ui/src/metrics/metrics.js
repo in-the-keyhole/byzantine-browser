@@ -16,11 +16,11 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import axios from 'axios';
-import Octicon, { ArrowLeft, ArrowRight } from '@githubprimer/octicons-react';
-import { timingSafeEqual } from 'crypto';
 import * as d3 from "d3";
 import { subscribeToBlocks } from '../SubscribeToBlocks.js';
 import realTimeChartMulti from './realtimechart.js';
+import Transactions from './transactions.js';
+
 
 class Metrics extends Component {
 
@@ -34,14 +34,16 @@ class Metrics extends Component {
         this.categories = [];
         let blocks = Number(this.blocknumber);
         this.range = blocks - 10;
+        this.floor = blocks - 10;
+        this.ceiling = blocks + 10;
 
-        for (var i = this.range; i < blocks+10; i++) {
+        for (var i = this.floor; i < this.ceiling; i++) {
 
-            this.categories.push(""+i);
+            this.categories.push(i);
         }
-       
 
-                    // create the real time chart
+
+        // create the real time chart
         this.chart = realTimeChartMulti()
             .width(900)               // width in pixels of chart; mandatory
             .height(350)              // height in pixels of chart; mandatory
@@ -61,25 +63,44 @@ class Metrics extends Component {
                 blocknumber: self.blocknumber
             });
 
-
-
-             // create data item
-           var obj = {
-            time: new Date(), // mandatory
-            category: blocks,      // mandatory
-            type: "circle",               // optional (defaults to circle)
-            color: "black",               // optional (defaults to black)
-            opacity: 0.8,               // optional (defaults to 1)
-            size: 5,                    // optional (defaults to 6)
+            // create data item
+            var obj = {
+                time: new Date(), // mandatory
+                category: blocks,      // mandatory
+                type: "circle",               // optional (defaults to circle)
+                color: "black",               // optional (defaults to black)
+                opacity: 0.8,               // optional (defaults to 1)
+                size: 5,                    // optional (defaults to 6)
             };
-   
-            self.chart.datum(obj);
-      
 
+            if (blocks >= self.ceiling) {
+                self.floor = blocks - 10;
+                self.ceiling = blocks + 10;
+                self.calculateY();
+            }
+
+
+            self.chart.datum(obj);
 
         });
 
     }
+
+
+
+    calculateY() {
+
+        this.categories = [];
+
+        for (var i = this.floor; i < this.ceiling; i++) {
+            this.categories.push(i);
+        }
+
+        this.chart.yDomain(this.categories);
+
+
+    }
+
 
 
     componentDidMount() {
@@ -88,42 +109,26 @@ class Metrics extends Component {
 
         // invoke the chart
         var chartDiv = d3.select("#realtime").append("div")
-            .attr("id", "chartDiv")
-.       call(this.chart);
+            .attr("id", "realtime")
+            .call(this.chart);
 
         // create data item
         var obj = {
-        time: new Date(), // mandatory
-        category: this.blocknumber,      // mandatory
-        type: "circle",               // optional (defaults to circle)
-        color: "black",               // optional (defaults to black)
-        opacity: 0.8,               // optional (defaults to 1)
-        size: 5,                    // optional (defaults to 6)
+            time: new Date(), // mandatory
+            category: this.blocknumber,      // mandatory
+            type: "circle",               // optional (defaults to circle)
+            color: "black",               // optional (defaults to black)
+            opacity: 0.8,               // optional (defaults to 1)
+            size: 5,                    // optional (defaults to 6)
         };
 
         // send the data item to the chart
-        this.chart.datum(obj);  
+        this.chart.datum(obj);
 
         // add Cata
 
         this.chart.yDomain(this.categories);
 
-      /*  let self = this;
-        setInterval(function() {
-
-            // create data item
-           var obj = {
-            time: new Date(), // mandatory
-            category: "1",      // mandatory
-            type: "circle",               // optional (defaults to circle)
-            color: "black",               // optional (defaults to black)
-            opacity: 0.8,               // optional (defaults to 1)
-            size: 5,                    // optional (defaults to 6)
-            };
-   
-            self.chart.datum(obj);
-      
-          }, 1000)*/
 
     }
 
@@ -132,8 +137,8 @@ class Metrics extends Component {
 
         e.preventDefault();
 
-    
-        window.location = ('/channel/' + this.channelid + '/' + this.blocknumber );
+
+        window.location = ('/channel/' + this.channelid + '/' + this.blocknumber);
 
 
     }
@@ -150,15 +155,24 @@ class Metrics extends Component {
                 </div>
 
                 <div className="row">
-                 
+
                     <div className="col-md-12">
-                    
-                        <div id="realtime"/>
-                    
-                    
+
+                        <div id="realtime" />
+
+
                     </div>
-                  
-                </div>  
+
+                    <div className="row">
+
+                        <div className="col-md-12">
+                            <Transactions channelid={this.channelid} />
+                        </div>
+                    </div>
+
+
+
+                </div>
             </div>
 
         )

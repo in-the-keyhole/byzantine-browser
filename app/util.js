@@ -144,4 +144,11 @@ var add = function(id,c) {
 
 }
 
+
+var getClient = function() {
+        return client;
+}
+
+
 exports.connectChannel = connectChannel;
+exports.getClient = getClient;

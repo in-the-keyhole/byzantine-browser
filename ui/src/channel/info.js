@@ -26,7 +26,8 @@ class Info extends Component {
 
         super(props);
         this.channelid = props.channelid;
-        this.state = { info: ''};
+        this.state = { info: '',chaincodes:''};
+        
 
         subscribeToBlocks((err, blocks) => this.setState({ 
             blocks: blocks 
@@ -66,6 +67,46 @@ class Info extends Component {
             self.setState({loginError: 'Error Accessing Channel'});
         });
 
+        // Get Chaincode
+        
+        var self = this;
+        axios({// using axios directly to avoid redirect interceptor
+            method:'post',
+            url:'/chaincodes?channelid='+self.channelid,
+            baseURL: config.apiserver,
+            data: {channelid: self.channelid}
+        }).then(function(res) {
+            
+
+           // alert (JSON.stringify(res.data));
+            var json = JSON.parse(JSON.stringify(res.data));
+
+            var cd = json.chaincodes;
+            var list = '';
+            for (var i = 0; i < cd.length; i++) {
+
+                list += "name: "+cd[i].name + " version: "+cd[i].version + "\n";
+
+            }
+            var hash = "";
+           // var bytes = json.currentBlockHash.buffer.data;
+           // var count = bytes.length;
+           // for(var index = 0; index < bytes.length; index += 1) {
+            //  hash += String.fromCharCode(bytes[index]);
+            //}
+    
+            self.setState( {chaincodes: list });
+           
+
+        }).catch(function(err){
+            self.setState({loginError: 'Error Accessing Channel'});
+        });
+
+
+
+
+
+
       }
 
   
@@ -79,10 +120,11 @@ class Info extends Component {
 
              
             </div>
-            <p>Channel: {this.channelid} </p>
-            <p># Blocks: {this.state.blocks}</p>
+            <p><b>Channel:</b> {this.channelid} </p>
+            <p><b># Blocks:</b> {this.state.blocks}</p>
+            <p><b>Chaincodes:</b></p>
+            {this.state.chaincodes}
             
-    
             
           </div>
 

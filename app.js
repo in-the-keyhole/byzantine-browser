@@ -33,6 +33,7 @@ var blockinfo = require('./app/blockinfo.js');
 var block = require('./app/block.js');
 var appconfig = require('./config.js');
 var chaincodes = require('./app/chaincodes.js');
+var txproposalrate = require('./app/transactionproposalrate.js');
 
 
 var hfc = require('fabric-client');
@@ -171,6 +172,20 @@ app.post('/chaincodes', function (req, res) {
 		});
 });
 
+
+
+// get block hash
+app.post('/txproposalrate', function (req, res) {
+	logger.debug('================ Tx Proposal TX rate======================');
+
+	var channelid = req.body.channelid;
+	var chaincode = req.body.chaincode;
+
+	txproposalrate.getTransactionProposalRate(channelid,chaincode)
+		.then(function (message) {
+			res.send(message);
+		});
+});
 
 
 
