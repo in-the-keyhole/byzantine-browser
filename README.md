@@ -9,7 +9,7 @@ Blockchain networks to be browsed and realtime actitity observed.
 
 ### Realtime Blockchain Metrics
 
-![](images/khs-block-browser.png)
+![](images/blockbrowsermetrics.png)
 
 
 ## Requirements
