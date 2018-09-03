@@ -41,12 +41,12 @@ class AverageBlock extends Component {
         }
        
 
-                    // create the real time chart
+                
         this.chart = realTimeChartMulti()
             .width(900)               // width in pixels of chart; mandatory
             .height(350)              // height in pixels of chart; mandatory
             .yDomain(["1"])   // initial categories/data streams (note array),  mandatory
-            .title("Blocks Per Minute")     // optional
+            .title("Block Telemetry")     // optional
             .yTitle("Blocks")     // optional
             .xTitle("Time")           // optional
             .border(true);            // optional
