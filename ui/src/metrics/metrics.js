@@ -21,6 +21,7 @@ import { subscribeToBlocks } from '../SubscribeToBlocks.js';
 import realTimeChartMulti from './realtimechart.js';
 import Transactions from './transactions.js';
 import Blocks from './blocks.js';
+import Info from './info.js';
 
 
 class Metrics extends Component {
@@ -52,8 +53,8 @@ class Metrics extends Component {
 
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-md-12"> <button type="button" onClick={this.blockview} class="btn btn-primary btn-sm pull-right">Block View</button>   </div>
+                <div className="row">            
+                   <div className="col-md-12"> <Info channelid={this.channelid} blocknumber={this.blocknumber} /> <button type="button" onClick={this.blockview} class="btn btn-primary btn-sm pull-right">Block View</button>   </div>
                 </div>
 
                 <div className="row">

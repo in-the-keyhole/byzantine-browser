@@ -121,7 +121,7 @@ class Info extends Component {
              
             </div>
             <p><b>Channel:</b> {this.channelid} </p>
-            <p><b># Blocks:</b> {this.state.blocks}</p>
+            <p><b># Blocks:</b> {this.state.blocks} </p>
             <p><b>Chaincodes:</b></p>
             {this.state.chaincodes}
             
