@@ -92,19 +92,23 @@ class Transactions extends Component {
                     self.chart.datum(obj);
                     var json = JSON.parse(JSON.stringify(res.data))
                   
-                    if (ms >= self.ceiling) {                  
+                    if (ms >= self.ceiling || ms <= self.floor) {                  
                         over++;
+                        self.ceiling = ms + 10;
+                        self.floor = ms - 10;
+
+                        self.generateY();
+                       
                     }
 
-                    if (over > 4) {
-                       self.ceiling = self.ceiling + (self.ceiling / 2); 
-                       self.floor = self.floor + (self.ceiling /2);   
+                   /* if (over >= 1 ) {
+                       let height = (self.ceiling - self.floor) /2;
+                       self.ceiling = self.ceiling + height; 
+                       self.floor = self.floor + height;   
                        over = 0;
+                     */  
+               
                        
-                       self.generateY();
-                       
-
-                    }
 
 
 
@@ -145,8 +149,8 @@ class Transactions extends Component {
         // send the data item to the chart
         this.chart.datum(obj);
 
-        this.generateY();
-        
+      
+      
 
     }
 

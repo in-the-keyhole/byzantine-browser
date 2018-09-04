@@ -23,6 +23,18 @@ var util = require('./util.js');
 
 logger.setLevel(config.loglevel);
 
+/**
+ * 
+ * Will invoke a specified chaincode with a "noop" function name. Access time will be
+ * specified. 
+ * 
+ *
+ * } channel_id 
+ * @param {*} chaincode 
+ */
+
+
+
 var getTransactionProposalRate = function(channel_id,chaincode) {
 	
 return Promise.resolve().then(() => {
@@ -40,7 +52,7 @@ return Promise.resolve().then(() => {
         targets: targets,
         chaincodeId: chaincode,
         txId: tx_id,
-        fcn: 'noop',
+        fcn: 'queryAllLabs',
         args: []
        
     };

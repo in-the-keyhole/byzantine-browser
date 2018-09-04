@@ -39,11 +39,10 @@ return Promise.resolve().then(() => {
    
 
 }).then((query_responses) => {
-    logger.debug("returned from query"+ JSON.stringify(query_responses));
-   
+    logger.debug("returned from query"+ JSON.stringify(query_responses));   
 	return  JSON.stringify(query_responses);
 }).catch((err) => {
-    logger.error("Caught Error", err);
+    logger.error("ERROR - Caught Error", err);
 });
 
 };
