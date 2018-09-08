@@ -33,6 +33,20 @@ return Promise.resolve().then(() => {
     return util.connectChannel(channel_id);
     
 }).then((c) => {
+
+
+    c.initialize();
+
+    var p = c.getPeers();
+    for (var i; i < p.length; i++) {
+        console.log( "Peer "+ p[i]  );
+
+    }
+   // console.log("DISCOVERY - "+JSON.stringify(c.getPeers()));
+
+    
+
+
     return c.queryInfo();
 }).then((query_responses) => {
     logger.debug("returned from query"+ JSON.stringify(query_responses));
