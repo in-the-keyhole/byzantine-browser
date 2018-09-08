@@ -21,6 +21,7 @@ import {
 import SelectChannel from './SelectChannel.js';
 import Channel from './channel/channel.js';
 import Metrics from './metrics/metrics.js';
+import RawBlock from './channel/rawblock.js';
 
 config.set({foo:'hello',
             baseurl: process.env.BASE_URL || 'http://localhost:4001'
@@ -35,6 +36,7 @@ class App extends Component {
          <Route exact path='/' component={SelectChannel}/>
          <Route exact path='/channel/:channelid/:blocknumber' component={Channel}/>
          <Route exact path='/metrics/:channelid/:blocknumber' component={Metrics}/>
+         <Route exact path='/rawblock/:channelid/:blocknumber' component={RawBlock}/>
       </Switch>
     </main> 
      );    

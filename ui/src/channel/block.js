@@ -67,6 +67,7 @@ class Block extends Component {
                 data: {number: json.header.number, prevhash: json.header.previous_hash, datahash: json.header.data_hash}
             }).then(function(results) {
 
+              localStorage.setItem("currentblock",JSON.stringify(json));    
 
               let timestamp = json.data.data[0].payload.header.channel_header.timestamp;  
               let typestring = json.data.data[0].payload.header.channel_header.typeString;    

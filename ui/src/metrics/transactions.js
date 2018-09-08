@@ -40,6 +40,8 @@ class Transactions extends Component {
             .xTitle("Time")           // optional
             .border(true);            // optional
 
+        this.generateY();
+
     }
 
     componentDidMount() {

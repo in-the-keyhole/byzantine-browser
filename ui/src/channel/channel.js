@@ -29,9 +29,17 @@ class Channel extends Component {
         this.channelid = this.props.match.params.channelid;
         this.blocknumber = this.props.match.params.blocknumber;
         this.metrics = this.metrics.bind(this);
+        this.rawblock = this.rawblock.bind(this);
         this.state = { channelid: ''};
       
     }
+
+
+    rawblock(e) {
+        e.preventDefault();
+        window.location = ('/rawblock/'+this.channelid+'/'+this.blocknumber);
+     }
+
 
 
     metrics(e) {
@@ -45,7 +53,7 @@ class Channel extends Component {
            
             <div className="container">
                 <div className="row">
-                    <div className="col-md-12"> <button type="button" onClick={this.metrics} class="btn btn-primary btn-sm pull-right">Metrics</button>   </div>
+                    <div className="col-md-12">  <h3> <a onClick={this.rawblock}>Raw Block</a>   <a onClick={this.metrics}>Metrics</a> </h3> </div>
                 </div>
                 <div className="row">
                     <div className="col-md-6"> <Block channelid={this.channelid} blocknumber={this.blocknumber} />  </div>  
