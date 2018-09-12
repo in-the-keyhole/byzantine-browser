@@ -81,6 +81,7 @@ class SelectChannel extends Component {
             } else {
                 self.error = true;
                 self.setState({loginError: 'Error Accessing Channel'});
+                localStorage.removeItem("channelid");
             }
         }).catch(function(err){
             console.log('ERROR '+ err);

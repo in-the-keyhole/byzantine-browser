@@ -36,8 +36,7 @@ class Channel extends Component {
       
     }
 
-
-    xcomponentWilllMount() {
+    componentWillMount() {
 
         if (localStorage.getItem("channelid") == null) {
             window.location = ('/');

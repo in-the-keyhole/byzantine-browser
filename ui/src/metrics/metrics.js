@@ -39,7 +39,7 @@ class Metrics extends Component {
 
     }
 
-    xcomponentWillMount() {
+    componentWillMount() {
 
         if (localStorage.getItem("channelid") == null) {
             window.location = ('/');
