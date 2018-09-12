@@ -30,22 +30,23 @@ class Metrics extends Component {
     constructor(props) {
 
         super(props);
-        this.channelid = this.props.match.params.channelid;
-        this.blocknumber = this.props.match.params.blocknumber;
-        this.blockview = this.blockview.bind(this);
+        // this.channelid = this.props.match.params.channelid;
+        // this.blocknumber = this.props.match.params.blocknumber;
+
+        this.channelid = localStorage.getItem("channelid");
+        this.blocknumber = localStorage.getItem("blocks");
+
 
     }
 
+    xcomponentWillMount() {
 
+        if (localStorage.getItem("channelid") == null) {
+            window.location = ('/');
+        }
 
-
-    blockview(e) {
-
-        e.preventDefault();
-        window.location = ('/channel/' + this.channelid + '/' + this.blocknumber);
 
     }
-
 
 
     render() {
@@ -53,8 +54,8 @@ class Metrics extends Component {
 
         return (
             <div className="container">
-                <div className="row">            
-                   <div className="col-md-12"> <Info channelid={this.channelid} blocknumber={this.blocknumber} /> <button type="button" onClick={this.blockview} class="btn btn-primary btn-sm pull-right">Block View</button>   </div>
+                <div className="row">
+                    <div className="col-md-12"> <Info channelid={this.channelid} blocknumber={this.blocknumber} />  </div>
                 </div>
 
                 <div className="row">

@@ -28,7 +28,7 @@ class RawBlock extends Component {
         this.blocknumber = Number(this.props.match.params.blocknumber) + 1;
         this.block = jsonFormatter(JSON.parse(localStorage.getItem("currentblock")));
         this.blocks= Number(localStorage.getItem("blocks")) + 1;
-        this.blockview = this.blockview.bind(this);
+    
 
     }
 
@@ -41,15 +41,6 @@ class RawBlock extends Component {
     }
 
 
-    blockview(e) {
-
-        e.preventDefault();
-        window.location = ('/channel/' + this.channelid + '/' + this.blocknumber);
-
-    }
-
-
-
     render() {
 
 
@@ -60,7 +51,7 @@ class RawBlock extends Component {
                     
                     <h4><b>Block:</b> {this.blocknumber} <b> of </b> {this.blocks}  </h4>   
                     
-                      <button type="button" onClick={this.blockview} class="btn btn-primary btn-sm pull-right">Block View</button>   </div>
+                    </div>
                      </div>
 
                 <div className="row">

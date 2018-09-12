@@ -16,18 +16,17 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import axios from 'axios';
+import Channel from './channel/channel.js';
+import SelectChannel from './SelectChannel.js';
+
 import {
-    Navbar, 
-    Nav, 
-    NavItem, 
-    NavDropdown,
-    MenuItem,
-    Button
-  } from 'react-bootstrap';
-  import ReactDOM from 'react-dom';
+    BrowserRouter,
+    Switch,
+    Route
+  } from 'react-router-dom'
+  
 
-
-class SelectChannel extends Component {
+class Home extends Component {
 
     constructor(props) {
 
@@ -54,10 +53,6 @@ class SelectChannel extends Component {
            base = 'http://localhost:4001';
         }
 
-      
-        localStorage.removeItem("channelid");
-    
-    
         console.log('Accessing channels');
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
@@ -72,10 +67,9 @@ class SelectChannel extends Component {
             if (res.data && res.data !== '') {
         
               localStorage.setItem("blocks",res.data.height.low-1);
-              localStorage.setItem("currentblocknumber",res.data.height.low-1);
               localStorage.setItem("channelid",self.state.channelid);
              
-              window.location = ('/channel');
+              window.location = ('/channel/'+self.state.channelid+'/'+(res.data.height.low-1));
               
              
             } else {
@@ -96,34 +90,19 @@ class SelectChannel extends Component {
 
     render() {
 
-        let err = <div></div>;
+    
+         const blocks =  <Channel />;
+         const selectChannel = <SelectChannel />;   
 
-        if (this.error) {
-          err =  <div class="alert alert-danger" role="alert">
-         Channel not found...
-            </div>
-         }
-       
 
-        const selectChannel = (<div class="jumbotron">
-        <h1 class="display-3">Hyperledger Browser</h1>
-        <p class="lead">Browse Blocks and Transaction Data</p>
-        <hr class="my-4"></hr>
-        <p>Input Channel name to Browse</p>
-        <form className="form" onSubmit={this.handleSubmit}>
-        <p> <input type="text" class="form-control" name="channelid"  placeholder="Channel Id" onChange={this.handleInputChange}  />  </p>
-         {err}
-        <p class="lead">
-        <button type="submit" class="btn btn-primary btn-lg">Browse</button>
-        </p>
-        </form> 
-         </div>);
-     
+         let channelId = localStorage.getItem("channelid");
 
-        return selectChannel;
+    
+
+        return channelId ? blocks : selectChannel;
             
             }
         
         }
         
-        export default SelectChannel
+        export default Home

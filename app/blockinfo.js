@@ -34,26 +34,22 @@ return Promise.resolve().then(() => {
     
 }).then((c) => {
 
-
     c.initialize();
-
-    var p = c.getPeers();
-    for (var i; i < p.length; i++) {
-        console.log( "Peer "+ p[i]  );
-
-    }
-   // console.log("DISCOVERY - "+JSON.stringify(c.getPeers()));
-
-    
-
 
     return c.queryInfo();
 }).then((query_responses) => {
-    logger.debug("returned from query"+ JSON.stringify(query_responses));
+    var result = JSON.stringify(query_responses);
+    if (result == '' || result == null) {
+        util.removeChannel(channel_id);
+
+    }
+    
+    logger.debug("returned from query"+ result);
    
-	return  JSON.stringify(query_responses);
+	return  result;
 }).catch((err) => {
     logger.error("Caught Error", err);
+    util.removeChannel(channel_id);
 });
 
 };

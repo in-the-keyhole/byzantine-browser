@@ -32,6 +32,9 @@ class Block extends Component {
         this.blocknumber = Number(props.blocknumber);
         this.prevClick = this.prevClick.bind(this);
         this.nextClick = this.nextClick.bind(this);
+        this.rawClick = this.rawClick.bind(this);
+        this.genesisClick = this.genesisClick.bind(this);
+        this.latestClick = this.latestClick.bind(this);
         this.numberofblocks = Number(localStorage.getItem("blocks"));
 
         let self = this;
@@ -93,14 +96,35 @@ class Block extends Component {
  
      prevClick(e) {
           e.preventDefault();
-          window.location = ('/channel/'+this.channelid+'/'+(this.blocknumber - 1));
+          localStorage.setItem("currentblocknumber",this.blocknumber - 1);
+          window.location = ('/channel');
      } 
 
 
     nextClick(e) {
         e.preventDefault();
-        window.location = ('/channel/'+this.channelid+'/'+(this.blocknumber + 1));
+        localStorage.setItem("currentblocknumber",this.blocknumber + 1);
+        window.location = ('/channel');
     }   
+
+
+    rawClick(e) {
+        e.preventDefault();
+        window.location = ('/rawblock/'+this.channelid+"/"+this.blocknumber);
+    }   
+
+    genesisClick(e) {
+        e.preventDefault();
+        localStorage.setItem("currentblocknumber",0);
+        window.location = ('/channel');
+    }   
+
+    latestClick(e) {
+        e.preventDefault();
+        localStorage.setItem("currentblocknumber",this.numberofblocks);
+        window.location = ('/channel');
+    }   
+
 
   
     render() {
@@ -121,10 +145,11 @@ class Block extends Component {
         return (
             <div class="card">
             <div class="card-block">
-              <h3 class="card-title">Block </h3>
+              <h3 class="card-title">Block</h3>
              
             </div>
-            <p> <b>Number:</b> {pre}  {number} {next} </p>
+            <p> <a onClick={this.rawClick}>Raw</a> | <a onClick={this.genesisClick}>Genesis</a> | <a onClick={this.latestClick}>Latest</a> </p>  
+            <p> <b>Number:</b> {pre}  {number} {next}  </p>
             <p> <b>Type:</b> {this.state.type} </p>
             <p> <b>Block Hash:</b> {this.state.hash} </p>
             <p> <b>Previous Hash:</b> {this.state.previousHash} </p>

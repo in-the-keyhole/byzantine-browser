@@ -42,6 +42,7 @@ return Promise.resolve().then(() => {
 	return  JSON.stringify(query_responses);
 }).catch((err) => {
     logger.error("Caught Error", err);
+    return "Error "+err;
 });
 
 };

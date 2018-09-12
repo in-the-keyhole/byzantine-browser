@@ -47,8 +47,7 @@ var connectChannel = function (channel_id) {
         client.setStateStore(wallet);
         return client.getUserContext(config.user_id, true);
     }).then((user) => {
-
-     
+  
         console.log("POOL"+pool.length);
 
        var channel = get(channel_id);
@@ -58,28 +57,28 @@ var connectChannel = function (channel_id) {
             logger.error("User not defined, or not enrolled - error");
         }
 
-
-        if (channelid != channel_id && channel != null) {
-            channel.close();
-            channel = null;
-        }
-
-      
-        console.log("CHANNEL is null " + channel == null )
-
+    
         if (channel == null ) {
 
+            try {
 
-            channel = client.newChannel(channel_id);
-            add(channel_id,channel);
-            peer = client.newPeer(config.network_url);
+             channel = client.newChannel(channel_id);  
+             peer = client.newPeer(config.network_url);
+            } catch (error) { 
+
+                  logger.error("Error creating new channel "+channel_id+error);
+                  return null;
+
+             }
+
 
             channel.addPeer(peer);
             channelid = channel_id;
             let channel_event_hub = channel.newChannelEventHub(peer);
 
-            channel_event_hub.connect(true);
+        
 
+            add(channel_id,channel);
             // keep the block_reg to unregister with later if needed
             let block_reg = channel_event_hub.registerBlockEvent((block) => {
                 logger.debug('Successfully received the block event - ' + JSON.stringify(block));
@@ -88,9 +87,13 @@ var connectChannel = function (channel_id) {
 
             }, (error) => {
                 logger.error('Failed to receive the block event ::' + error.toString());
-
+                
 
             });
+
+        
+
+            channel_event_hub.connect(true);
 
 
             logger.info("Is Event Hub Connected " + channel_event_hub.isconnected());
@@ -130,7 +133,8 @@ var add = function(id,c) {
     let add = true;
     for (var i = 0; i < pool.length ; i++) {
         if ( pool[i].channelid == id) {
-            add = false; 
+            add = false;
+            break; 
         }
 
     }
@@ -149,6 +153,25 @@ var getClient = function() {
         return client;
 }
 
+var removeChannel = function(cid) {
+
+    var index = -1;
+    for (var i = 0 ; i < pool.length; i++) {
+    
+        if (pool[i].channelid === cid)
+            { index = i }   
+      
+     }
+ 
+     if (index >=0 ){
+         pool.splice(index,1);
+     }
+
+     return;
+
+}
+
 
 exports.connectChannel = connectChannel;
 exports.getClient = getClient;
+exports.removeChannel = removeChannel;

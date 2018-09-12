@@ -18,24 +18,30 @@ import {
   Button
 } from 'react-bootstrap';
 
-import SelectChannel from './SelectChannel.js';
+import Home from './Home.js';
 import Channel from './channel/channel.js';
 import Metrics from './metrics/metrics.js';
 import RawBlock from './channel/rawblock.js';
+import SelectChannel from './SelectChannel.js';
+
 
 config.set({foo:'hello',
             baseurl: process.env.BASE_URL || 'http://localhost:4001'
 });
 
 class App extends Component {
+
   render() {
 
+  
+   
     const Main = () => (
       <main>
       <Switch>
-         <Route exact path='/' component={SelectChannel}/>
-         <Route exact path='/channel/:channelid/:blocknumber' component={Channel}/>
-         <Route exact path='/metrics/:channelid/:blocknumber' component={Metrics}/>
+         <Route exact path='/' component={Home}/>
+         <Route exact path='/select' component={SelectChannel}/>
+         <Route exact path='/channel' component={Channel}/>
+         <Route exact path='/metrics' component={Metrics}/>
          <Route exact path='/rawblock/:channelid/:blocknumber' component={RawBlock}/>
       </Switch>
     </main> 
@@ -48,14 +54,18 @@ class App extends Component {
       <BrowserRouter>
         <div>
            <div>
-           <Navbar>
+           <Navbar inverse>
                <Navbar.Header>
                <Navbar.Brand>
                    <a href="/">KHS Blockchain Browser&#123;for Hyperledger&#125;</a>
                </Navbar.Brand>
-               </Navbar.Header>
-      
-               
+               </Navbar.Header>      
+            <Nav pullRight>
+              <NavItem eventKey={3} href="/select">SelectChannel</NavItem>
+              <NavItem eventKey={3} href="/channel">Blocks</NavItem>
+              <NavItem eventKey={5} href="/metrics">Metrics</NavItem> 
+            </Nav>
+        
            </Navbar>
            </div>
            <div className="container">

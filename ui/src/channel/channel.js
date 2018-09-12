@@ -26,13 +26,26 @@ class Channel extends Component {
 
    constructor(props) {
         super(props);
-        this.channelid = this.props.match.params.channelid;
-        this.blocknumber = this.props.match.params.blocknumber;
+       // this.channelid = this.props.match.params.channelid;
+       // this.blocknumber = this.props.match.params.blocknumber;
+        this.channelid = localStorage.getItem("channelid");
+        this.blocknumber = localStorage.getItem("currentblocknumber");
         this.metrics = this.metrics.bind(this);
         this.rawblock = this.rawblock.bind(this);
         this.state = { channelid: ''};
       
     }
+
+
+    xcomponentWilllMount() {
+
+        if (localStorage.getItem("channelid") == null) {
+            window.location = ('/');
+        }
+
+
+    }
+
 
 
     rawblock(e) {
@@ -52,9 +65,6 @@ class Channel extends Component {
         return (
            
             <div className="container">
-                <div className="row">
-                    <div className="col-md-12">  <h3> <a onClick={this.rawblock}>Raw Block</a>   <a onClick={this.metrics}>Metrics</a> </h3> </div>
-                </div>
                 <div className="row">
                     <div className="col-md-6"> <Block channelid={this.channelid} blocknumber={this.blocknumber} />  </div>  
                     <div className="col-md-3"> <Info channelid={this.channelid} />  </div>  
