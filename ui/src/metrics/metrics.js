@@ -30,8 +30,6 @@ class Metrics extends Component {
     constructor(props) {
 
         super(props);
-        // this.channelid = this.props.match.params.channelid;
-        // this.blocknumber = this.props.match.params.blocknumber;
 
         this.channelid = localStorage.getItem("channelid");
         this.blocknumber = localStorage.getItem("blocks");

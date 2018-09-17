@@ -25,10 +25,6 @@ import RawBlock from './channel/rawblock.js';
 import SelectChannel from './SelectChannel.js';
 
 
-config.set({foo:'hello',
-            baseurl: process.env.BASE_URL || 'http://localhost:4001'
-});
-
 class App extends Component {
 
   render() {

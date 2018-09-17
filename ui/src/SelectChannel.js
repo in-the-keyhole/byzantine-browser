@@ -16,15 +16,7 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import axios from 'axios';
-import {
-    Navbar, 
-    Nav, 
-    NavItem, 
-    NavDropdown,
-    MenuItem,
-    Button
-  } from 'react-bootstrap';
-  import ReactDOM from 'react-dom';
+import {config} from './Config.js';
 
 
 class SelectChannel extends Component {
@@ -48,22 +40,15 @@ class SelectChannel extends Component {
 
     handleSubmit(ev) {
       
-    
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-           base = 'http://localhost:4001';
-        }
-
       
+        // remove old before fetchin a new one
         localStorage.removeItem("channelid");
-    
-    
-        console.log('Accessing channels');
+
         var self = this;
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
             url:'/blockinfo',
-            baseURL: base,
+            baseURL: config.apiserver,
             data: self.state
         }).then(function(res) {
             console.log(res.data);
