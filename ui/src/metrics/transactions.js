@@ -14,176 +14,125 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import realTimeChartMulti from './realtimechart.js';
-import { config } from '../Config.js';
+import React, { Component } from "react";
+import axios from "axios";
+import realTimeChartMulti from "./realtimechart.js";
+import { config } from "../Config.js";
 import * as d3 from "d3";
 
 class Transactions extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      floor: 0,
+      ceiling: 40
+    };
 
+    // create the real time chart
+    this.chart = realTimeChartMulti()
+      .width(900) // width in pixels of chart; mandatory
+      .height(350) // height in pixels of chart; mandatory
+      .yDomain(["1"]) // initial categories/data streams (note array),  mandatory
+      .title("Tx's Proposal Rate (ms)") // optional
+      .yTitle("Ms") // optional
+      .xTitle("Time") // optional
+      .border(true); // optional
 
-    constructor(props) {
+    this.chart.yDomain(this.generateY(this.state.floor, this.state.ceiling));
+  }
 
-        super(props);
-        this.channelid = props.channelid;
-        this.floor = 0;
-        this.ceiling = 40;
-
-        // create the real time chart
-        this.chart = realTimeChartMulti()
-            .width(900)               // width in pixels of chart; mandatory
-            .height(350)              // height in pixels of chart; mandatory
-            .yDomain(["1"])   // initial categories/data streams (note array),  mandatory
-            .title("Tx's Proposal Rate (ms)")     // optional
-            .yTitle("Ms")     // optional
-            .xTitle("Time")           // optional
-            .border(true);            // optional
-
-        this.generateY();
-
+  generateY = (floor, ceiling) => {
+    let cats = [];
+    for (let i = floor; i < ceiling; i++) {
+      cats.push(i);
     }
 
-    componentDidMount() {
+    return cats;
+  };
 
+  componentDidMount = async () => {
+    const { channelid, blocknumber } = this.props;
+    this.createChart(blocknumber);
 
-        this.createChart();
+    // get Chaincodes, first one will be used to send proposal
+    try {
+      const res = await axios({
+        method: "post",
+        url: `/chaincodes?channelid=${channelid}`,
+        baseURL: config.apiserver,
+        data: { channelid }
+      });
+      let json = JSON.parse(JSON.stringify(res.data));
+      let cd = json.chaincodes;
+      let cdname = cd[0].name;
+      let over = 0;
 
-        // get Chaincodes, first one will be used to send proposal
-        var self = this;
-        axios({
-            method: 'post',
-            url: '/chaincodes?channelid=' + self.channelid,
+      setInterval(async () => {
+        let start = new Date().getTime();
+        try {
+          const rateResult = await axios({
+            // using axios directly to avoid redirect interceptor
+            method: "post",
+            url: "/txproposalrate",
             baseURL: config.apiserver,
-            data: { channelid: self.channelid }
-        }).then(function (res) {
-
-            var json = JSON.parse(JSON.stringify(res.data));
-            var cd = json.chaincodes;
-            var cdname = cd[0].name;
-            var over = 0;
-            
-            /* var list = '';
-             for (var i = 0; i < cd.length; i++) {
- 
-                 list += "name: "+cd[i].name + " version: "+cd[i].version + "\n";
- 
-             } */
-
-            setInterval(function () {
-
-                let start = new Date().getTime();
-                axios({// using axios directly to avoid redirect interceptor
-                    method: 'post',
-                    url: '/txproposalrate',
-                    baseURL: config.apiserver,
-                    data: { channelid: self.channelid, chaincode: cdname }
-                }).then(function (res) {
-
-                    let ms = new Date().getTime() - start;
-                    // create data item
-                    var obj = {
-                        time: new Date(), // mandatory
-                        category: ms,      // mandatory
-                        type: "circle",               // optional (defaults to circle)
-                        color: "red",               // optional (defaults to black)
-                        opacity: 0.8,               // optional (defaults to 1)
-                        size: 5,                    // optional (defaults to 6)
-                    };
-
-                    self.chart.datum(obj);
-                    var json = JSON.parse(JSON.stringify(res.data))
-                  
-                    if (ms >= self.ceiling || ms <= self.floor) {                  
-                        over++;
-                        self.ceiling = ms + 10;
-                        self.floor = ms - 10;
-
-                        self.generateY();
-                       
-                    }
-
-                   /* if (over >= 1 ) {
-                       let height = (self.ceiling - self.floor) /2;
-                       self.ceiling = self.ceiling + height; 
-                       self.floor = self.floor + height;   
-                       over = 0;
-                     */  
-               
-                       
-
-
-
-                }).catch(function (err) {
-                    console.log(err);
-                    self.setState({ loginError: 'Error acccesing api' });
-                });
-            }, 1000);
-
-
-        }).catch(function (err) {
-            self.setState({ loginError: 'Error Accessing Channel' });
-        });
-
-
-
-    }
-
-
-    createChart() {
-
-
-        // invoke the chart
-        var chartDiv = d3.select("#tx").append("div")
-            .attr("id", "tx")
-            .call(this.chart);
-
-        // create data item
-        var obj = {
+            data: { channelid, chaincode: cdname }
+          });
+          let ms = new Date().getTime() - start;
+          // create data item
+          var obj = {
             time: new Date(), // mandatory
-            category: this.blocknumber,      // mandatory
-            type: "line",               // optional (defaults to circle)
-            color: "black",               // optional (defaults to black)
-            opacity: 0.8,               // optional (defaults to 1)
-            size: 5,                    // optional (defaults to 6)
-        };
+            category: ms, // mandatory
+            type: "circle", // optional (defaults to circle)
+            color: "red", // optional (defaults to black)
+            opacity: 0.8, // optional (defaults to 1)
+            size: 5 // optional (defaults to 6)
+          };
 
-        // send the data item to the chart
-        this.chart.datum(obj);
+          this.chart.datum(obj);
+          var json = JSON.parse(JSON.stringify(rateResult.data));
 
-      
-      
-
-    }
-
-
-    generateY() {
-
-        let cats = [];
-        for (var i = this.floor; i < this.ceiling; i++) {
-            cats.push(i);
+          if (ms >= this.state.ceiling || ms <= this.state.floor) {
+            over++;
+            const ceiling = ms + 10;
+            const floor = ms - 10;
+            this.chart.yDomain(this.generateY(floor, ceiling));
+            this.setState(() => ({ ceiling, floor }));
+          }
+        } catch (error) {
+          console.log(error);
+          this.setState({ loginError: "Error acccesing api" });
         }
-
-        this.chart.yDomain(cats);
-
+      }, 1000);
+    } catch (error) {
+      this.setState({ loginError: "Error Accessing Channel" });
     }
+  };
 
+  createChart = blocknumber => {
+    // invoke the chart
+    var chartDiv = d3
+      .select("#tx")
+      .append("div")
+      .attr("id", "tx")
+      .call(this.chart);
 
-    render() {
+    // create data item
+    var obj = {
+      time: new Date(), // mandatory
+      category: blocknumber, // mandatory
+      type: "line", // optional (defaults to circle)
+      color: "black", // optional (defaults to black)
+      opacity: 0.8, // optional (defaults to 1)
+      size: 5 // optional (defaults to 6)
+    };
 
-        return (
+    // send the data item to the chart
+    this.chart.datum(obj);
+  };
 
-            <div id="tx" />
-
-
-        )
-
-    }
-
-
-
+  render() {
+    return <div id="tx" />;
+  }
 }
 
-
-export default Transactions
-
+export default Transactions;

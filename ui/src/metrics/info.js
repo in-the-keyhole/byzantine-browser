@@ -16,9 +16,7 @@ limitations under the License.
 
 import React, { Component } from "react";
 import axios from "axios";
-import realTimeChartMulti from "./realtimechart.js";
 import { config } from "../Config.js";
-import * as d3 from "d3";
 import { subscribeToBlocks } from "../SubscribeToBlocks.js";
 
 class Info extends Component {
@@ -35,7 +33,7 @@ class Info extends Component {
   }
 
   componentDidMount() {
-    const { channelid, blocknumber } = this.props;
+    const { channelid } = this.props;
     setInterval(async () => {
       try {
         const res = await axios({

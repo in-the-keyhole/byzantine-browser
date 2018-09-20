@@ -1,18 +1,9 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
+import React from "react";
 import "./App.css";
-import config from "react-global-configuration";
 
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
-import {
-  Navbar,
-  Nav,
-  NavItem,
-  NavDropdown,
-  MenuItem,
-  Button
-} from "react-bootstrap";
+import { Navbar, Nav, NavItem } from "react-bootstrap";
 
 import Home from "./Home.js";
 import Channel from "./channel/channel.js";
