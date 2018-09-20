@@ -32,7 +32,7 @@ class SelectChannel extends Component {
   handleSubmit = async ev => {
     ev.preventDefault();
     console.log(this.props);
-    const { resetChannelId, setChannelInfo, history } = this.props;
+    const { resetChannelId, setChannelInfo } = this.props;
     // remove old before fetchin a new one
     // localStorage.removeItem("channelid");
     resetChannelId();

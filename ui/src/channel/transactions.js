@@ -42,8 +42,6 @@ class Transactions extends Component {
     })
       .then(function(res) {
         let json = JSON.parse(JSON.stringify(res.data));
-        let txs = [];
-        let count = json.data.data.length;
         let writes = null;
         let reads = null;
         let txarray = json.data.data.map(t => {
@@ -105,11 +103,6 @@ class Transactions extends Component {
 
   render() {
     let data = this.state.transactions;
-    let txcount = 0;
-
-    if (data) {
-      txcount = data.length;
-    }
 
     const columns = [
       {

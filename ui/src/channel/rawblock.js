@@ -14,61 +14,44 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { config } from '../Config.js';
-import jsonFormatter from 'json-format';
+import jsonFormatter from "json-format";
 
 class RawBlock extends Component {
+  constructor(props) {
+    super(props);
+    this.channelid = this.props.match.params.channelid;
+    this.blocknumber = Number(this.props.match.params.blocknumber) + 1;
+    this.block = jsonFormatter(
+      JSON.parse(localStorage.getItem("currentblock"))
+    );
+    this.blocks = Number(localStorage.getItem("blocks")) + 1;
+  }
 
-    constructor(props) {
+  componentDidMount() {
+    console.log(this.block);
+  }
 
-        super(props);
-        this.channelid = this.props.match.params.channelid;
-        this.blocknumber = Number(this.props.match.params.blocknumber) + 1;
-        this.block = jsonFormatter(JSON.parse(localStorage.getItem("currentblock")));
-        this.blocks= Number(localStorage.getItem("blocks")) + 1;
-    
+  render() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <h4>
+              <b>Block:</b> {this.blocknumber} <b> of </b> {this.blocks}{" "}
+            </h4>
+          </div>
+        </div>
 
-    }
-
-
-    componentDidMount() {
-
-        console.log(this.block);
-
-
-    }
-
-
-    render() {
-
-
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12">
-                    
-                    <h4><b>Block:</b> {this.blocknumber} <b> of </b> {this.blocks}  </h4>   
-                    
-                    </div>
-                     </div>
-
-                <div className="row">
-
-                    <div className="col-md-12">
-
-                        <textarea rows="30" cols="120" value={this.block}></textarea>
-
-                    </div>
-
-
-                </div>
-            </div>
-        )
-
-    }
-
+        <div className="row">
+          <div className="col-md-12">
+            <textarea rows="30" cols="120" value={this.block} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
- 
-export default RawBlock
+
+export default RawBlock;

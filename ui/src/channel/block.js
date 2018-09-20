@@ -17,7 +17,6 @@ limitations under the License.
 import React, { Component } from "react";
 import axios from "axios";
 import Octicon, { ArrowLeft, ArrowRight } from "@githubprimer/octicons-react";
-import { timingSafeEqual } from "crypto";
 import { subscribeToBlocks } from "../SubscribeToBlocks.js";
 import { config } from "../Config.js";
 

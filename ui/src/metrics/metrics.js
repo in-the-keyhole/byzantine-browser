@@ -14,11 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from "react";
-import axios from "axios";
-import * as d3 from "d3";
-import { subscribeToBlocks } from "../SubscribeToBlocks.js";
-import realTimeChartMulti from "./realtimechart.js";
+import React from "react";
 import Transactions from "./transactions.js";
 import Blocks from "./blocks.js";
 import Info from "./info.js";
