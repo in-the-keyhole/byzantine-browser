@@ -22,36 +22,30 @@ import Transactions from "./transactions.js";
 import { Subscribe } from "unstated";
 import ChannelContainer from "../ChannelContainer.js";
 import { Redirect } from "react-router";
-class Channel extends Component {
-  render() {
-    const { channelid, blocknumber } = this.props;
 
-    if (!channelid) {
-      return <Redirect to="/select" />;
-    }
-
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6">
-            <Block channelid={channelid} blocknumber={blocknumber} />
-          </div>
-          <div className="col-md-3">
-            <Info channelid={channelid} />
-          </div>
-          <div className="col-md-3">
-            <Peers channelid={channelid} />
-          </div>
+const Channel = ({ channelid, blocknumber }) =>
+  channelid ? (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-6">
+          <Block channelid={channelid} blocknumber={blocknumber} />
         </div>
-        <div className="row">
-          <div className="col-md-12">
-            <Transactions channelid={channelid} blocknumber={blocknumber} />
-          </div>
+        <div className="col-md-3">
+          <Info channelid={channelid} />
+        </div>
+        <div className="col-md-3">
+          <Peers channelid={channelid} />
         </div>
       </div>
-    );
-  }
-}
+      <div className="row">
+        <div className="col-md-12">
+          <Transactions channelid={channelid} blocknumber={blocknumber} />
+        </div>
+      </div>
+    </div>
+  ) : (
+    <Redirect to="/select" />
+  );
 
 const ChannelWithState = props => (
   <Subscribe to={[ChannelContainer]}>
