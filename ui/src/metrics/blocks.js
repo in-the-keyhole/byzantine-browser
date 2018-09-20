@@ -14,133 +14,92 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import realTimeChartMulti from './realtimechart.js';
-import { config } from '../Config.js';
+import React, { Component } from "react";
+import axios from "axios";
+import realTimeChartMulti from "./realtimechart.js";
+import { config } from "../Config.js";
 import * as d3 from "d3";
 
 class Blocks extends Component {
+  constructor(props) {
+    super(props);
+    let blocks = Number(props.blocknumber);
 
+    // create the real time chart
+    this.chart = realTimeChartMulti()
+      .width(900) // width in pixels of chart; mandatory
+      .height(350) // height in pixels of chart; mandatory
+      .yDomain(["1"]) // initial categories/data streams (note array),  mandatory
+      .title("Blocks Per Minute") // optional
+      .yTitle("Blocks") // optional
+      .xTitle("Time") // optional
+      .border(true); // optional
 
-    constructor(props) {
+    this.chart.yDomain(this.calculateY(blocks - 10, blocks + 10));
+  }
 
-        super(props);
-        this.channelid = this.props.channelid;
-        this.blocknumber = this.props.blocknumber;
-        this.categories = [];
-        let blocks = Number(this.blocknumber);
-        this.range = blocks - 10;
-        this.floor = blocks - 10;
-        this.ceiling = blocks + 10;
+  calculateY = (floor, ceiling) => {
+    let categories = [];
 
-        // create the real time chart
-        this.chart = realTimeChartMulti()
-            .width(900)               // width in pixels of chart; mandatory
-            .height(350)              // height in pixels of chart; mandatory
-            .yDomain(["1"])   // initial categories/data streams (note array),  mandatory
-            .title("Blocks Per Minute")     // optional
-            .yTitle("Blocks")     // optional
-            .xTitle("Time")           // optional
-            .border(true);            // optional
-
-
-        this.calculateY();
-
+    for (var i = floor; i < ceiling; i++) {
+      categories.push(i);
     }
 
+    return categories;
+  };
 
-    calculateY() {
+  componentDidMount() {
+    const { channelid, blocknumber } = this.props;
+    const ceiling = blocknumber + 10;
+    // invoke the chart
+    var chartDiv = d3
+      .select("#blocks")
+      .append("div")
+      .attr("id", "blocks")
+      .call(this.chart);
 
-        this.categories = [];
+    setInterval(async () => {
+      let start = new Date().getTime();
 
-        for (var i = this.floor; i < this.ceiling; i++) {
-            this.categories.push(i);
+      try {
+        const res = await axios({
+          // using axios directly to avoid redirect interceptor
+          method: "post",
+          url: `/blockinfo?channelid=${channelid}`,
+          baseURL: config.apiserver,
+          data: { channelid }
+        });
+        var json = JSON.parse(JSON.stringify(res.data));
+        let blocks = json.height.low;
+
+        // create data item
+        var obj = {
+          time: new Date(), // mandatory
+          category: json.height.low, // mandatory
+          type: "circle", // optional (defaults to circle)
+          color: "black", // optional (defaults to black)
+          opacity: 0.8, // optional (defaults to 1)
+          size: 5 // optional (defaults to 6)
+        };
+
+        if (blocks >= ceiling) {
+          const floor = blocks - 10;
+          const ceiling = blocks + 10;
+          this.chart.yDomain(this.calculateY(floor, ceiling));
         }
 
-        this.chart.yDomain(this.categories);
+        // send the data item to the chart
+        this.chart.datum(obj);
+      } catch (error) {
+        console.log(error);
+        this.setState({ loginError: "Error acccesing api" });
+      }
+    }, 1000);
+  }
 
-
-    }
-
-
-
-    componentDidMount() {
-
-
-        let self = this;
-        // invoke the chart
-        var chartDiv = d3.select("#blocks").append("div")
-            .attr("id", "blocks")
-            .call(this.chart);
-
-        setInterval(function () {
-
-            let start = new Date().getTime();
-            axios({// using axios directly to avoid redirect interceptor
-                method: 'post',
-                url: '/blockinfo?channelid=' + self.channelid,
-                baseURL: config.apiserver,
-                data: { channelid: self.channelid }
-            }).then(function (res) {
-
-                var json = JSON.parse(JSON.stringify(res.data));
-                let blocks = json.height.low;
-
-                // create data item
-                var obj = {
-                    time: new Date(), // mandatory
-                    category: json.height.low,      // mandatory
-                    type: "circle",               // optional (defaults to circle)
-                    color: "black",               // optional (defaults to black)
-                    opacity: 0.8,               // optional (defaults to 1)
-                    size: 5,                    // optional (defaults to 6)
-                };
-
-
-                if (blocks >= self.ceiling) {
-                    self.floor = blocks - 10;
-                    self.ceiling = blocks + 10;
-                    self.calculateY();
-                    self.chart.yDomain(self.categories);
-
-                }
-
-
-                // send the data item to the chart
-                self.chart.datum(obj);
-
-
-
-            }).catch(function (err) {
-                console.log(err);
-                self.setState({ loginError: 'Error acccesing api' });
-            });
-
-
-        }, 1000);
-
-
-    }
-
-
-
-
-    render() {
-
-        return (
-
-            <div id="blocks" />
-
-
-        )
-
-    }
-
-
-
+  render() {
+    return <div id="blocks" />;
+  }
 }
 
-
-export default Blocks
-
+export default Blocks;
