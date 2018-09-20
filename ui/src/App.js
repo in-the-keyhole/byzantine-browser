@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import config from "react-global-configuration";
 
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
 import {
   Navbar,
@@ -52,13 +52,28 @@ const Layout = () => (
               </Navbar.Brand>
             </Navbar.Header>
             <Nav pullRight>
-              <NavItem eventKey={3} href="/select">
+              <NavItem
+                eventKey={3}
+                href="/select"
+                to="/select"
+                componentClass={Link}
+              >
                 SelectChannel
               </NavItem>
-              <NavItem eventKey={3} href="/channel">
+              <NavItem
+                eventKey={3}
+                href="/channel"
+                to="/channel"
+                componentClass={Link}
+              >
                 Blocks
               </NavItem>
-              <NavItem eventKey={5} href="/metrics">
+              <NavItem
+                eventKey={5}
+                href="/metrics"
+                to="/metrics"
+                componentClass={Link}
+              >
                 Metrics
               </NavItem>
             </Nav>
