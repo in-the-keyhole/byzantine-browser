@@ -14,65 +14,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import {config} from '../Config.js';
+import React, { Component } from "react";
+import axios from "axios";
+import { config } from "../Config.js";
 
 class Peers extends Component {
+  constructor(props) {
+    super(props);
+    this.channelid = props.channelid;
+    this.state = { peers: [] };
+  }
 
-    constructor(props) {
+  componentDidMount() {
+    console.log("Accessing channels");
+    var self = this;
+    axios({
+      // using axios directly to avoid redirect interceptor
+      method: "post",
+      url: "/peers",
+      baseURL: config.apiserver,
+      data: { channelid: self.channelid }
+    })
+      .then(function(res) {
+        var a = [];
+        a.push(res.data);
+        self.setState({ peers: a });
+      })
+      .catch(function(err) {
+        self.setState({ loginError: "Error Accessing Channel" });
+      });
+  }
 
-        super(props);
-        this.channelid = props.channelid;
-        this.state = { peers: []};
-    }
+  render() {
+    const listItems = this.state.peers.map((number, i) => (
+      <li key={i}> {number} </li>
+    ));
 
+    return (
+      <div className="card">
+        <div className="card-block">
+          <h3 className="card-title">Peers</h3>
+        </div>
+        <ul className="list-group list-group-flush">{listItems}</ul>
+      </div>
+    );
+  }
+}
 
-
-    componentDidMount() {
-
-        console.log('Accessing channels');
-        var self = this;
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/peers',
-            baseURL: config.apiserver,
-            data: {channelid: self.channelid}
-        }).then(function(res) {
-            
-            var a = [];
-            a.push(res.data);
-            self.setState( {peers: a } );
-
-        }).catch(function(err){
-            self.setState({loginError: 'Error Accessing Channel'});
-        });
-
-      }
-
-
-  
-    render() {
-
-        const listItems = this.state.peers.map((number) =>
-        <li>  {number}   </li>
-      );
-
-        return (
-            <div className="card">
-            <div className="card-block">
-              <h3 className="card-title">Peers</h3>
-            </div>
-            <ul className="list-group list-group-flush">
-                {listItems}
-            </ul>
-
-          </div>
-
-            ) 
-            
-            }
-        
-        }
-        
-        export default Peers
+export default Peers;

@@ -14,74 +14,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import Peers from './peers.js';
-import Info from './info.js';
-import Block from './block.js';
-import Transactions from './transactions.js';
-
-
+import React, { Component } from "react";
+import Peers from "./peers.js";
+import Info from "./info.js";
+import Block from "./block.js";
+import Transactions from "./transactions.js";
+import { Subscribe } from "unstated";
+import ChannelContainer from "../ChannelContainer.js";
+import { Redirect } from "react-router";
 class Channel extends Component {
+  render() {
+    const { channelid, blocknumber } = this.props;
 
-   constructor(props) {
-        super(props);
-       // this.channelid = this.props.match.params.channelid;
-       // this.blocknumber = this.props.match.params.blocknumber;
-        this.channelid = localStorage.getItem("channelid");
-        this.blocknumber = localStorage.getItem("currentblocknumber");
-        this.metrics = this.metrics.bind(this);
-        this.rawblock = this.rawblock.bind(this);
-        this.state = { channelid: ''};
-      
+    if (!channelid) {
+      return <Redirect to="/select" />;
     }
 
-    componentWillMount() {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            <Block channelid={channelid} blocknumber={blocknumber} />
+          </div>
+          <div className="col-md-3">
+            <Info channelid={channelid} />
+          </div>
+          <div className="col-md-3">
+            <Peers channelid={channelid} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <Transactions channelid={channelid} blocknumber={blocknumber} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
-        if (localStorage.getItem("channelid") == null) {
-            window.location = ('/');
-        }
+const ChannelWithState = props => (
+  <Subscribe to={[ChannelContainer]}>
+    {({ state: { channelid, currentblocknumber: blocknumber } }) => (
+      <Channel {...{ channelid, blocknumber }} {...props} />
+    )}
+  </Subscribe>
+);
 
-
-    }
-
-
-
-    rawblock(e) {
-        e.preventDefault();
-        window.location = ('/rawblock/'+this.channelid+'/'+this.blocknumber);
-     }
-
-
-
-    metrics(e) {
-       e.preventDefault();
-       window.location = ('/metrics/'+this.channelid+'/'+this.blocknumber);
-    }
-
-  
-    render() {
-        return (
-           
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-6"> <Block channelid={this.channelid} blocknumber={this.blocknumber} />  </div>  
-                    <div className="col-md-3"> <Info channelid={this.channelid} />  </div>  
-                    <div className="col-md-3"> <Peers channelid={this.channelid}/>  </div>
-                   
-                </div>  
-                <div className="row">
-                    <div className="col-md-12"> <Transactions channelid={this.channelid} blocknumber={this.blocknumber} />  </div>
-                </div>        
-
-
-            </div>
-
-
-            ) 
-            
-            }
-        
-        }
-        
-        export default Channel
+export default ChannelWithState;

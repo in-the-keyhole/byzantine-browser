@@ -37,6 +37,7 @@ const Main = () => (
     </Switch>
   </main>
 );
+
 const Layout = () => (
   <div>
     <BrowserRouter>

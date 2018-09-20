@@ -14,170 +14,173 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-import {config} from '../Config.js';
+import React, { Component } from "react";
+import axios from "axios";
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+import { config } from "../Config.js";
 
 class Transactions extends Component {
+  constructor(props) {
+    super(props);
+    this.channelid = props.channelid;
+    this.state = { block: "" };
+    this.blocknumber = Number(props.blocknumber);
+    this.writesets = [];
+    this.readsets = [];
+    this.endorsearray = null;
+  }
 
-    constructor(props) {
+  componentDidMount() {
+    var self = this;
+    axios({
+      // using axios directly to avoid redirect interceptor
+      method: "post",
+      url: "/block",
+      baseURL: config.apiserver,
+      data: { channelid: self.channelid, blocknumber: this.blocknumber }
+    })
+      .then(function(res) {
+        let json = JSON.parse(JSON.stringify(res.data));
+        let txs = [];
+        let count = json.data.data.length;
+        let writes = null;
+        let reads = null;
+        let txarray = json.data.data.map(t => {
+          let lang =
+            t.payload.data.actions[0].payload.chaincode_proposal_payload.input
+              .chaincode_spec.typeString;
+          //let proposalhash = t.payload.data.actions[0].proposal_response_payload.proposal_hash;
+          let chaincode =
+            t.payload.data.actions[0].payload.chaincode_proposal_payload.input
+              .chaincode_spec.chaincode_id.name;
+          let rwsets =
+            t.payload.data.actions[0].payload.action.proposal_response_payload
+              .extension.results.ns_rwset;
+          let endorsements =
+            t.payload.data.actions[0].payload.action.endorsements;
 
-        super(props);
-        this.channelid = props.channelid;
-        this.state = { block: ''};
-        this.blocknumber = Number(props.blocknumber);
-        this.writesets = [];
-        this.readsets = [];
-        this.endorsearray = null;
+          let warray = rwsets.map(rw => {
+            let writeset = {};
+            writeset["namespace"] = rw.namespace;
+            writes = rw.rwset.writes.map(s => {
+              return s.key + " = " + s.value + "  ";
+            });
+            writeset["set"] = writes;
+            return writeset;
+          });
 
-    }
+          let rarray = rwsets.map(rw => {
+            let readset = {};
+            readset["namespace"] = rw.namespace;
+            reads = rw.rwset.reads.map(s => {
+              return s.key + " = " + s.value + "  ";
+            });
+            readset["set"] = reads;
+            return readset;
+          });
 
+          self.endorsearray = endorsements.map(e => {
+            return e.endorser.Mspid;
+          });
 
-    componentDidMount() {
+          self.writesets.push(warray);
+          self.readsets.push(rarray);
 
-
-        var self = this;
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/block',
-            baseURL: config.apiserver,
-            data: {channelid: self.channelid, blocknumber: this.blocknumber}
-        }).then(function(res) {
-            
-            let json = JSON.parse(JSON.stringify(res.data));
-            let txs = [];
-            let count =  json.data.data.length;
-            let writes = null;
-            let reads = null;
-            let txarray = json.data.data.map((t) => { 
-
-                     let lang = t.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.typeString;
-                     //let proposalhash = t.payload.data.actions[0].proposal_response_payload.proposal_hash;
-                     let chaincode = t.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.chaincode_id.name;  
-                     let rwsets = t.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset; 
-                     let endorsements = t.payload.data.actions[0].payload.action.endorsements;
-
-                     let warray = rwsets.map( (rw)  => {  
-                               let writeset = { };
-                               writeset["namespace"] = rw.namespace; 
-                               writes = rw.rwset.writes.map( (s) => { return s.key + ' = ' + s.value + '  '  } );
-                               writeset["set"] = writes; 
-                               return writeset; 
-                      } );
-
-
-
-                      let rarray = rwsets.map( (rw)  => {  
-                        let readset = { };
-                        readset["namespace"] = rw.namespace; 
-                        reads = rw.rwset.reads.map( (s) => { return s.key + ' = ' + s.value + '  '  } );
-                        readset["set"] = reads; 
-                        return readset; 
-                    } );
-
-                     
-                    self.endorsearray = endorsements.map( (e) => { return e.endorser.Mspid; } );
-
-
-                      self.writesets.push(warray);
-                      self.readsets.push(rarray);
-
-
-                     return { txid: t.payload.header.channel_header.tx_id,
-                              type: t.payload.header.channel_header.typeString,
-                              createdby: t.payload.header.signature_header.creator.Mspid,
-                              chaincode: chaincode + '(' + lang + ')',
-                              endorsements : self.endorsearray
-                            
-                    }
-
-               });
-
-            
- 
-            
-
-            self.setState( {transactions: txarray } );
-
-        }).catch(function(err){
-            self.setState({loginError: 'Error Accessing Channel'});
+          return {
+            txid: t.payload.header.channel_header.tx_id,
+            type: t.payload.header.channel_header.typeString,
+            createdby: t.payload.header.signature_header.creator.Mspid,
+            chaincode: chaincode + "(" + lang + ")",
+            endorsements: self.endorsearray
+          };
         });
 
+        self.setState({ transactions: txarray });
+      })
+      .catch(function(err) {
+        self.setState({ loginError: "Error Accessing Channel" });
+      });
+  }
+
+  render() {
+    let data = this.state.transactions;
+    let txcount = 0;
+
+    if (data) {
+      txcount = data.length;
+    }
+
+    const columns = [
+      {
+        Header: "Tx Id",
+        accessor: "txid" // String-based value accessors!
+      },
+      {
+        Header: "Type",
+        accessor: "type"
+        //Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
+      },
+      {
+        Header: "Created By",
+        accessor: "createdby"
+      },
+      {
+        Header: "Chaincode",
+        accessor: "chaincode"
+      },
+      {
+        Header: "Endorsements",
+        accessor: "endorsements"
       }
+    ];
 
-  
-    render() {
+    var ws = this.writesets;
+    var rs = this.readsets;
 
-        let data = this.state.transactions;
-        let txcount = 0;
+    return (
+      <div className="card">
+        <div className="card-block">
+          <h3 className="card-title">Transactions</h3>
+        </div>
+        <div className="col-md-12">
+          <ReactTable
+            data={data}
+            columns={columns}
+            defaultPageSize={10}
+            SubComponent={row => {
+              return (
+                <div>
+                  <p>
+                    <b> Reads </b>
+                  </p>
+                  {rs[row.index].map(r => {
+                    return (
+                      <div>
+                        <p> Namespace: {r.namespace} </p>
+                        <p> {r.set}</p>
+                      </div>
+                    );
+                  })}
+                  <p>
+                    <b> Writes </b>
+                  </p>
+                  {ws[row.index].map(w => {
+                    return (
+                      <div>
+                        <p> Namespace: {w.namespace} </p>
+                        <p> {w.set}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+}
 
-        if (data) {
-            txcount = data.length;
-        }
-
-        const columns = [{
-            Header: 'Tx Id',
-            accessor: 'txid' // String-based value accessors!
-        }, {
-            Header: 'Type',
-            accessor: 'type',
-            //Cell: props => <span className='number'>{props.value}</span> // Custom cell components!
-        }, {
-            Header: 'Created By',
-            accessor: 'createdby'
-        },
-        {
-            Header: 'Chaincode',
-            accessor: 'chaincode'
-        },
-        {
-            Header: 'Endorsements',
-            accessor: 'endorsements'
-        },
-
-        
-
-        
-    ];   
-
-
-        var ws = this.writesets;
-        var rs = this.readsets;
-
-        return (
-            <div class="card">
-            <div class="card-block">
-            <h3 class="card-title">Transactions</h3>
-             
-            </div>
-            <div className="col-md-12">
-              <ReactTable
-               data={data}
-               columns={columns}
-               defaultPageSize="10"
-               SubComponent={row => {
-                return (
-                  <div> 
-                    <p> <b> Reads </b> </p>  
-                    {rs[row.index].map( (r) => { return <div> <p> Namespace:  {r.namespace} </p>                         
-                    <p> {r.set}</p> </div> } ) }  
-                    <p> <b> Writes </b> </p>
-                    {ws[row.index].map( (w) => { return <div> <p> Namespace:  {w.namespace} </p>                     
-                    <p> {w.set}</p> </div> } ) }  
-                  </div>
-                );
-              }}
-
-              />
-          </div>    
-          </div>
-
-            ) 
-            
-            }
-        
-        }
-        
-        export default Transactions
+export default Transactions;

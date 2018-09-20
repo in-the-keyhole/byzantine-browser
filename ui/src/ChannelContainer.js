@@ -7,11 +7,17 @@ class ChannelContainer extends Container {
     channelid: undefined
   };
 
-  resetChannelId = () => {
-    this.setState({ channelid: undefined });
+  resetChannelId = async () => {
+    await this.setState({ channelid: undefined });
   };
-  setChannelInfo = ({ blocks, currentblocknumber, channelid }) => {
-    this.setState({
+
+  setChannelInfo = async ({ blocks, currentblocknumber = 0, channelid }) => {
+    // console.log("setting channel info", {
+    //   blocks,
+    //   currentblocknumber,
+    //   channelid
+    // });
+    await this.setState({
       blocks,
       currentblocknumber,
       channelid

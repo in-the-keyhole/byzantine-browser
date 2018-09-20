@@ -14,95 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
-import Channel from './channel/channel.js';
-import SelectChannel from './SelectChannel.js';
-
-import {
-    BrowserRouter,
-    Switch,
-    Route
-  } from 'react-router-dom'
-  
+import React, { Component } from "react";
+import Channel from "./channel/channel.js";
+import SelectChannel from "./SelectChannel.js";
+import { Subscribe } from "unstated";
+import ChannelContainer from "./ChannelContainer.js";
+import { Redirect } from "react-router";
 
 class Home extends Component {
+  state = { error: "" };
 
-    constructor(props) {
+  render() {
+    const { channelid } = this.props;
+    const blocks = <Channel />;
+    const selectChannel = <SelectChannel />;
 
-        super(props);
-        this.state = { channelid: ''};
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.error = false;
+    return channelid ? <Redirect to="/channel" /> : selectChannel;
+  }
+}
 
-    }
+const HomeWithState = props => (
+  <Subscribe to={[ChannelContainer]}>
+    {({ state: { channelid } }) => <Home {...{ channelid }} {...props} />}
+  </Subscribe>
+);
 
-    handleInputChange(ev) {
-        const target = ev.target;
-        this.setState({[target.name]: target.value});
-        this.setState({error: ''});
-    }
-
-
-    handleSubmit(ev) {
-      
-    
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-           base = 'http://localhost:4001';
-        }
-
-        console.log('Accessing channels');
-        var self = this;
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/blockinfo',
-            baseURL: base,
-            data: self.state
-        }).then(function(res) {
-            console.log(res.data);
-            
-
-            if (res.data && res.data !== '') {
-        
-              localStorage.setItem("blocks",res.data.height.low-1);
-              localStorage.setItem("channelid",self.state.channelid);
-             
-              window.location = ('/channel/'+self.state.channelid+'/'+(res.data.height.low-1));
-              
-             
-            } else {
-                self.error = true;
-                self.setState({loginError: 'Error Accessing Channel'});
-            }
-        }).catch(function(err){
-            console.log('ERROR '+ err);
-           
-        });
-
-        ev.preventDefault();
-    }    
-
-
-
-
-
-    render() {
-
-    
-         const blocks =  <Channel />;
-         const selectChannel = <SelectChannel />;   
-
-
-         let channelId = localStorage.getItem("channelid");
-
-    
-
-        return channelId ? blocks : selectChannel;
-            
-            }
-        
-        }
-        
-        export default Home
+export default HomeWithState;

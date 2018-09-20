@@ -17,66 +17,62 @@ limitations under the License.
 import React, { Component } from "react";
 import axios from "axios";
 import { config } from "./Config.js";
-import { Container, Subscribe } from "unstated";
+import { Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer.js";
-import { withRouter } from "react-router-dom";
-import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from "constants";
+import { Redirect } from "react-router";
+
 class SelectChannel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { channelid: "", error: "" };
-  }
+  state = { channelid: "", error: "" };
 
   handleInputChange = ev => {
     const target = ev.target;
     this.setState({ [target.name]: target.value, error: "" });
   };
 
-  handleSubmit = ev => {
+  handleSubmit = async ev => {
     ev.preventDefault();
+    console.log(this.props);
     const { resetChannelId, setChannelInfo, history } = this.props;
     // remove old before fetchin a new one
     // localStorage.removeItem("channelid");
     resetChannelId();
-
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/blockinfo",
-      baseURL: config.apiserver,
-      data: self.state
-    })
-      .then(function(res) {
-        console.log(res.data);
-
-        if (res.data && res.data !== "") {
-          //   localStorage.setItem("blocks", res.data.height.low - 1);
-          //   localStorage.setItem("currentblocknumber", res.data.height.low - 1);
-          //   localStorage.setItem("channelid", self.state.channelid);
-
-          setChannelInfo({
-            blocks: res.data.height.low - 1,
-            currentblocknumber: res.data.height.low - 1,
-            channelid: self.state.channelid
-          });
-          history.push("/channel");
-        } else {
-          self.setState({ error: "Channel not found..." });
-          //   localStorage.removeItem("channelid");
-          resetChannelId();
-        }
-      })
-      .catch(function(err) {
-        console.log("ERROR " + err);
+    try {
+      const res = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: "/blockinfo",
+        baseURL: config.apiserver,
+        data: this.state
       });
+      console.log(res.data);
+
+      if (res.data && res.data !== "") {
+        //   localStorage.setItem("blocks", res.data.height.low - 1);
+        //   localStorage.setItem("currentblocknumber", res.data.height.low - 1);
+        //   localStorage.setItem("channelid", self.state.channelid);
+
+        setChannelInfo({
+          blocks: res.data.height.low - 1,
+          currentblocknumber: res.data.height.low - 1,
+          channelid: this.state.channelid
+        });
+      } else {
+        this.setState({ error: "Channel not found..." });
+        //   localStorage.removeItem("channelid");
+        resetChannelId();
+      }
+    } catch (error) {
+      console.log("ERROR " + error);
+    }
   };
 
   render() {
-    console.log(this.props);
     const { error } = this.state;
+    const { channelid } = this.props;
 
-    return (
+    return channelid ? (
+      <Redirect to="/channel" />
+    ) : (
       <div className="jumbotron">
         <h1 className="display-3">Hyperledger Browser</h1>
         <p className="lead">Browse Blocks and Transaction Data</p>
@@ -94,7 +90,7 @@ class SelectChannel extends Component {
           </p>
           {error && (
             <div className="alert alert-danger" role="alert">
-              Channel not found...
+              {error}
             </div>
           )}
           <p className="lead">
@@ -110,8 +106,11 @@ class SelectChannel extends Component {
 
 const SelectChannelWithState = props => (
   <Subscribe to={[ChannelContainer]}>
-    {({ setChannelInfo, resetChannelId }) => (
-      <SelectChannel {...{ setChannelInfo, resetChannelId }} {...props} />
+    {({ setChannelInfo, resetChannelId, state: { channelid } }) => (
+      <SelectChannel
+        {...{ setChannelInfo, resetChannelId, channelid }}
+        {...props}
+      />
     )}
   </Subscribe>
 );
