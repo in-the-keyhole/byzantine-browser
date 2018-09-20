@@ -21,17 +21,8 @@ import { Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer.js";
 import { Redirect } from "react-router";
 
-class Home extends Component {
-  state = { error: "" };
-
-  render() {
-    const { channelid } = this.props;
-    const blocks = <Channel />;
-    const selectChannel = <SelectChannel />;
-
-    return channelid ? <Redirect to="/channel" /> : selectChannel;
-  }
-}
+const Home = ({ channelid }) =>
+  channelid ? <Redirect to="/channel" /> : <SelectChannel />;
 
 const HomeWithState = props => (
   <Subscribe to={[ChannelContainer]}>
