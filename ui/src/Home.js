@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from "react";
-import Channel from "./channel/channel.js";
+import React from "react";
 import SelectChannel from "./SelectChannel.js";
 import { Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer.js";

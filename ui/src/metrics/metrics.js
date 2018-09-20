@@ -14,78 +14,51 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 import * as d3 from "d3";
-import { subscribeToBlocks } from '../SubscribeToBlocks.js';
-import realTimeChartMulti from './realtimechart.js';
-import Transactions from './transactions.js';
-import Blocks from './blocks.js';
-import Info from './info.js';
+import { subscribeToBlocks } from "../SubscribeToBlocks.js";
+import realTimeChartMulti from "./realtimechart.js";
+import Transactions from "./transactions.js";
+import Blocks from "./blocks.js";
+import Info from "./info.js";
 
+import { Redirect } from "react-router";
+import { Subscribe } from "unstated";
+import ChannelContainer from "../ChannelContainer.js";
 
-class Metrics extends Component {
+const Metrics = ({ channelid, blocknumber }) =>
+  channelid ? (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-12">
+          <Info channelid={channelid} blocknumber={blocknumber} />
+        </div>
+      </div>
 
+      <div className="row">
+        <div className="col-md-12">
+          <Blocks channelid={channelid} blocknumber={blocknumber} />
+          <div id="realtime" />
+        </div>
 
-    constructor(props) {
+        <div className="row">
+          <div className="col-md-12">
+            <Transactions channelid={channelid} />
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <Redirect to="/" />
+  );
 
-        super(props);
+const MetricsWithState = props => (
+  <Subscribe to={[ChannelContainer]}>
+    {({ state: { channelid, blocknumber } }) => (
+      <Metrics {...{ channelid, blocknumber }} {...props} />
+    )}
+  </Subscribe>
+);
 
-        this.channelid = localStorage.getItem("channelid");
-        this.blocknumber = localStorage.getItem("blocks");
-
-
-    }
-
-    componentWillMount() {
-
-        if (localStorage.getItem("channelid") == null) {
-            window.location = ('/');
-        }
-
-
-    }
-
-
-    render() {
-
-
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"> <Info channelid={this.channelid} blocknumber={this.blocknumber} />  </div>
-                </div>
-
-                <div className="row">
-
-                    <div className="col-md-12">
-
-                        <Blocks channelid={this.channelid} blocknumber={this.blocknumber} />
-                        <div id="realtime" />
-
-
-                    </div>
-
-                    <div className="row">
-
-                        <div className="col-md-12">
-                            <Transactions channelid={this.channelid} />
-                        </div>
-                    </div>
-
-
-
-                </div>
-            </div>
-
-        )
-
-    }
-
-
-
-}
-
-
-export default Metrics
-
+export default MetricsWithState;

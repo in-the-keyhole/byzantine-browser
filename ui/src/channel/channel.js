@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from "react";
+import React from "react";
 import Peers from "./peers.js";
 import Info from "./info.js";
 import Block from "./block.js";
