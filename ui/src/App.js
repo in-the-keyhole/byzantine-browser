@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 
@@ -11,22 +11,30 @@ import Metrics from "./metrics/metrics.js";
 import RawBlock from "./channel/rawblock.js";
 import SelectChannel from "./SelectChannel.js";
 
-import { Provider } from "unstated";
+import { Provider, Subscribe } from "unstated";
+import ChannelContainer from "./ChannelContainer";
 
 const Main = () => (
-  <main>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/select" component={SelectChannel} />
-      <Route exact path="/channel" component={Channel} />
-      <Route exact path="/metrics" component={Metrics} />
-      <Route
-        exact
-        path="/rawblock/:channelid/:blocknumber"
-        component={RawBlock}
-      />
-    </Switch>
-  </main>
+  <Subscribe to={[ChannelContainer]}>
+    {({ state: { blocks: numberofblocks } }) => (
+      <main>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/select" component={SelectChannel} />
+          {/* <Route exact path="/channel" component={Channel} /> */}
+          <Redirect exact from="/channel" to={`/channel/${numberofblocks}`} />
+
+          <Route exact path="/channel/:blocknumber" component={Channel} />
+          <Route exact path="/metrics" component={Metrics} />
+          <Route
+            exact
+            path="/rawblock/:channelid/:blocknumber"
+            component={RawBlock}
+          />
+        </Switch>
+      </main>
+    )}
+  </Subscribe>
 );
 
 const Layout = () => (

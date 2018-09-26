@@ -19,43 +19,37 @@ import axios from "axios";
 import Octicon, { ArrowLeft, ArrowRight } from "@githubprimer/octicons-react";
 import { subscribeToBlocks } from "../SubscribeToBlocks.js";
 import { config } from "../Config.js";
+import { Subscribe } from "unstated";
+import ChannelContainer from "../ChannelContainer.js";
+import { withRouter } from "react-router";
 
 class Block extends Component {
   constructor(props) {
     super(props);
     this.channelid = props.channelid;
     this.state = { block: "" };
-    this.blocknumber = Number(props.blocknumber);
-    this.prevClick = this.prevClick.bind(this);
-    this.nextClick = this.nextClick.bind(this);
-    this.rawClick = this.rawClick.bind(this);
-    this.genesisClick = this.genesisClick.bind(this);
-    this.latestClick = this.latestClick.bind(this);
-    this.numberofblocks = Number(localStorage.getItem("blocks"));
 
-    let self = this;
     subscribeToBlocks(function(err, blocks) {
-      self.numberofblocks = Number(blocks) - 1;
-      localStorage.setItem("blocks", self.numberofblocks);
-      self.setState({
-        blocknumber: self.blocknumber
-      });
+      const numberOfBlocks = Number(blocks) - 1;
+      this.props.setNumberOfBlocks(numberOfBlocks);
     });
   }
 
-  componentDidMount() {
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/block",
-      baseURL: config.apiserver,
-      data: { channelid: self.channelid, blocknumber: self.blocknumber }
-    })
-      .then(function(res) {
-        var json = JSON.parse(JSON.stringify(res.data));
+  updateData = async () => {
+    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
 
-        axios({
+    try {
+      const res = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: "/block",
+        baseURL: config.apiserver,
+        data: { channelid, blocknumber }
+      });
+      const json = JSON.parse(JSON.stringify(res.data));
+
+      try {
+        const results = await axios({
           // using axios directly to avoid redirect interceptor
           method: "post",
           url: "/blockhash",
@@ -65,82 +59,97 @@ class Block extends Component {
             prevhash: json.header.previous_hash,
             datahash: json.header.data_hash
           }
-        })
-          .then(function(results) {
-            localStorage.setItem("currentblock", JSON.stringify(json));
+        });
 
-            let timestamp =
-              json.data.data[0].payload.header.channel_header.timestamp;
-            let typestring =
-              json.data.data[0].payload.header.channel_header.typeString;
+        let timestamp =
+          json.data.data[0].payload.header.channel_header.timestamp;
+        let typestring =
+          json.data.data[0].payload.header.channel_header.typeString;
 
-            self.setState({
-              number: json.header.number,
-              hash: results.data,
-              previousHash: json.header.previous_hash,
-              txno: json.data.data.length,
-              timestamp: timestamp,
-              type: typestring
-            });
-          })
-          .catch(function(err) {
-            console.log(err);
-            self.setState({ loginError: "Error accessing block hahs" });
-          });
-      })
-      .catch(function(err) {
-        console.log(err);
-        self.setState({ loginError: "Error acccesing block" });
-      });
-  }
+        this.setState({
+          number: json.header.number,
+          hash: results.data,
+          previousHash: json.header.previous_hash,
+          txno: json.data.data.length,
+          timestamp: timestamp,
+          type: typestring
+        });
+      } catch (error) {
+        console.log(error);
+        this.setState({ loginError: "Error accessing block hash" });
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({ loginError: "Error acccesing block" });
+    }
+  };
 
-  prevClick(e) {
+  componentDidUpdate = async () => {
+    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
+
+    this.updateData();
+  };
+
+  componentDidMount = async () => {
+    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
+
+    this.updateData();
+  };
+
+  prevClick = e => {
     e.preventDefault();
-    localStorage.setItem("currentblocknumber", this.blocknumber - 1);
-    window.location = "/channel";
-  }
+    this.props.history.push(`/channel/${this.props.blocknumber - 1}`);
+  };
 
-  nextClick(e) {
+  nextClick = e => {
     e.preventDefault();
-    localStorage.setItem("currentblocknumber", this.blocknumber + 1);
-    window.location = "/channel";
-  }
+    this.props.history.push(`/channel/${this.props.blocknumber + 1}`);
+  };
 
-  rawClick(e) {
+  rawClick = e => {
     e.preventDefault();
-    window.location = "/rawblock/" + this.channelid + "/" + this.blocknumber;
-  }
+    this.props.history.push(
+      `/rawblock/${this.props.channelid}/${this.props.blocknumber}`
+    );
+  };
 
-  genesisClick(e) {
+  genesisClick = e => {
     e.preventDefault();
-    localStorage.setItem("currentblocknumber", 0);
-    window.location = "/channel";
-  }
+    // this.props.setCurrentBlockNumber(0);
+    this.props.history.push("/channel/0");
+  };
 
-  latestClick(e) {
+  latestClick = e => {
     e.preventDefault();
-    localStorage.setItem("currentblocknumber", this.numberofblocks);
-    window.location = "/channel";
-  }
+    // this.props.setCurrentBlockNumber(this.props.numberofblocks);
+    this.props.history.push(`/channel/${this.props.numberofblocks}`);
+
+    // this.props.history.push("/channel");
+  };
 
   render() {
-    let number = this.blocknumber + 1 + "/" + (this.numberofblocks + 1);
+    const { blocknumber, numberofblocks } = this.props;
+    console.log("blocknumber", blocknumber);
+    console.log("numberofblocks", numberofblocks);
+    const number = (blocknumber || 0) + 1 + "/" + (numberofblocks + 1);
 
-    var pre = <span> &nbsp; </span>;
-    if (this.blocknumber > 0) {
+    console.log(number);
+
+    let pre = <span> &nbsp; </span>;
+    if (blocknumber > 0) {
       pre = (
-        <a onClick={this.prevClick}>
+        <span onClick={this.prevClick}>
           <Octicon icon={ArrowLeft} />
-        </a>
+        </span>
       );
     }
 
-    var next = <span> </span>;
-    if (this.blocknumber < this.numberofblocks) {
+    let next = <span> </span>;
+    if (blocknumber < numberofblocks) {
       next = (
-        <a onClick={this.nextClick}>
+        <span onClick={this.nextClick}>
           <Octicon icon={ArrowRight} />
-        </a>
+        </span>
       );
     }
 
@@ -177,4 +186,29 @@ class Block extends Component {
   }
 }
 
-export default Block;
+const BlockWithState = props => (
+  <Subscribe to={[ChannelContainer]}>
+    {({
+      setNumberOfBlocks,
+      setCurrentBlockNumber,
+      state: {
+        channelid,
+        currentblocknumber: blocknumber,
+        blocks: numberofblocks
+      }
+    }) => (
+      <Block
+        {...{
+          channelid,
+          blocknumber,
+          numberofblocks,
+          setNumberOfBlocks,
+          setCurrentBlockNumber
+        }}
+        {...props}
+      />
+    )}
+  </Subscribe>
+);
+
+export default withRouter(BlockWithState);

@@ -11,12 +11,18 @@ class ChannelContainer extends Container {
     await this.setState({ channelid: undefined });
   };
 
+  setNumberOfBlocks = async numberOfBlocks =>
+    await this.setState({ blocks: numberOfBlocks });
+
+  setCurrentBlockNumber = async currentBlockNumber =>
+    await this.setState({ currentblocknumber: currentBlockNumber });
+
   setChannelInfo = async ({ blocks, currentblocknumber = 0, channelid }) => {
-    // console.log("setting channel info", {
-    //   blocks,
-    //   currentblocknumber,
-    //   channelid
-    // });
+    console.log("setting channel info", {
+      blocks,
+      currentblocknumber,
+      channelid
+    });
     await this.setState({
       blocks,
       currentblocknumber,

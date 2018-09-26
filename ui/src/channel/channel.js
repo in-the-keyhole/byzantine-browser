@@ -23,12 +23,17 @@ import { Subscribe } from "unstated";
 import ChannelContainer from "../ChannelContainer.js";
 import { Redirect } from "react-router";
 
-const Channel = ({ channelid, blocknumber }) =>
+const Channel = ({
+  channelid,
+  match: {
+    params: { blocknumber }
+  }
+}) =>
   channelid ? (
     <div className="container">
       <div className="row">
         <div className="col-md-6">
-          <Block channelid={channelid} blocknumber={blocknumber} />
+          <Block channelid={channelid} blocknumber={+blocknumber} />
         </div>
         <div className="col-md-3">
           <Info channelid={channelid} />
@@ -39,7 +44,7 @@ const Channel = ({ channelid, blocknumber }) =>
       </div>
       <div className="row">
         <div className="col-md-12">
-          <Transactions channelid={channelid} blocknumber={blocknumber} />
+          <Transactions channelid={channelid} blocknumber={+blocknumber} />
         </div>
       </div>
     </div>
@@ -49,9 +54,7 @@ const Channel = ({ channelid, blocknumber }) =>
 
 const ChannelWithState = props => (
   <Subscribe to={[ChannelContainer]}>
-    {({ state: { channelid, currentblocknumber: blocknumber } }) => (
-      <Channel {...{ channelid, blocknumber }} {...props} />
-    )}
+    {({ state: { channelid } }) => <Channel {...{ channelid }} {...props} />}
   </Subscribe>
 );
 
