@@ -47,7 +47,6 @@ class Block extends Component {
         data: { channelid, blocknumber }
       });
       const json = JSON.parse(JSON.stringify(res.data));
-      console.log(json);
       await setCurrentBlockData(json);
 
       try {

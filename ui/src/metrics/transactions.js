@@ -50,6 +50,11 @@ class Transactions extends Component {
     return cats;
   };
 
+  componentWillUnmount() {
+    // TODO - need to figure out how to tell the chart
+    // to cancel subscriptions after component is unmounted
+  }
+
   componentDidMount = async () => {
     const { channelid, blocknumber } = this.props;
     this.createChart(blocknumber);

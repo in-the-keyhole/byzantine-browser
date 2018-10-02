@@ -23,7 +23,7 @@ class Peers extends Component {
 
   componentDidMount = async () => {
     const { channelid } = this.props;
-    console.log("Accessing channels");
+    console.log("Accessing peers");
     try {
       const res = await axios({
         // using axios directly to avoid redirect interceptor
@@ -36,7 +36,7 @@ class Peers extends Component {
       a.push(res.data);
       this.setState({ peers: a });
     } catch (error) {
-      this.setState({ loginError: "Error Accessing Channel" });
+      this.setState({ loginError: "Error Accessing Peers" });
     }
   };
 
