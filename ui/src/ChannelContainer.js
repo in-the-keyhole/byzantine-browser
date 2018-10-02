@@ -4,12 +4,11 @@ class ChannelContainer extends Container {
   state = {
     blocks: undefined,
     currentblocknumber: undefined,
-    channelid: undefined
+    channelid: undefined,
+    currentBlockData: undefined
   };
 
-  resetChannelId = async () => {
-    await this.setState({ channelid: undefined });
-  };
+  resetChannelId = async () => await this.setState({ channelid: undefined });
 
   setNumberOfBlocks = async numberOfBlocks =>
     await this.setState({ blocks: numberOfBlocks });
@@ -17,18 +16,15 @@ class ChannelContainer extends Container {
   setCurrentBlockNumber = async currentBlockNumber =>
     await this.setState({ currentblocknumber: currentBlockNumber });
 
-  setChannelInfo = async ({ blocks, currentblocknumber = 0, channelid }) => {
-    console.log("setting channel info", {
-      blocks,
-      currentblocknumber,
-      channelid
-    });
+  setCurrentBlockData = async currentBlockData =>
+    await this.setState({ currentBlockData });
+
+  setChannelInfo = async ({ blocks, currentblocknumber = 0, channelid }) =>
     await this.setState({
       blocks,
       currentblocknumber,
       channelid
     });
-  };
 }
 
 export default ChannelContainer;

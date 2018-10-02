@@ -8,6 +8,9 @@
     "khs lab blockchain",
     "v1.0 fabric nodesdk sample"
   ],
+  "scripts": {
+    "start": "cd ui && npm start"
+  },
   "engines": {
     "node": ">=6.9.5 <7.0",
     "npm": ">=3.10.10 <4.0"

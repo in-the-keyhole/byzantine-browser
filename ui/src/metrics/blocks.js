@@ -52,15 +52,12 @@ class Blocks extends Component {
     const { channelid, blocknumber } = this.props;
     const ceiling = blocknumber + 10;
     // invoke the chart
-    var chartDiv = d3
-      .select("#blocks")
+    d3.select("#blocks")
       .append("div")
       .attr("id", "blocks")
       .call(this.chart);
 
     setInterval(async () => {
-      let start = new Date().getTime();
-
       try {
         const res = await axios({
           // using axios directly to avoid redirect interceptor
@@ -69,11 +66,11 @@ class Blocks extends Component {
           baseURL: config.apiserver,
           data: { channelid }
         });
-        var json = JSON.parse(JSON.stringify(res.data));
+        const json = JSON.parse(JSON.stringify(res.data));
         let blocks = json.height.low;
 
         // create data item
-        var obj = {
+        const obj = {
           time: new Date(), // mandatory
           category: json.height.low, // mandatory
           type: "circle", // optional (defaults to circle)

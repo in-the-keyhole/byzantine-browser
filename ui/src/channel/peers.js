@@ -19,31 +19,26 @@ import axios from "axios";
 import { config } from "../Config.js";
 
 class Peers extends Component {
-  constructor(props) {
-    super(props);
-    this.channelid = props.channelid;
-    this.state = { peers: [] };
-  }
+  state = { peers: [] };
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    const { channelid } = this.props;
     console.log("Accessing channels");
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/peers",
-      baseURL: config.apiserver,
-      data: { channelid: self.channelid }
-    })
-      .then(function(res) {
-        var a = [];
-        a.push(res.data);
-        self.setState({ peers: a });
-      })
-      .catch(function(err) {
-        self.setState({ loginError: "Error Accessing Channel" });
+    try {
+      const res = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: "/peers",
+        baseURL: config.apiserver,
+        data: { channelid }
       });
-  }
+      const a = [];
+      a.push(res.data);
+      this.setState({ peers: a });
+    } catch (error) {
+      this.setState({ loginError: "Error Accessing Channel" });
+    }
+  };
 
   render() {
     const listItems = this.state.peers.map((number, i) => (

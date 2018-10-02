@@ -36,7 +36,7 @@ class Block extends Component {
   }
 
   updateData = async () => {
-    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
+    const { channelid, blocknumber, setCurrentBlockData } = this.props;
 
     try {
       const res = await axios({
@@ -47,6 +47,8 @@ class Block extends Component {
         data: { channelid, blocknumber }
       });
       const json = JSON.parse(JSON.stringify(res.data));
+      console.log(json);
+      await setCurrentBlockData(json);
 
       try {
         const results = await axios({
@@ -75,25 +77,23 @@ class Block extends Component {
           type: typestring
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         this.setState({ loginError: "Error accessing block hash" });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       this.setState({ loginError: "Error acccesing block" });
     }
   };
 
-  componentDidUpdate = async () => {
-    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
-
-    this.updateData();
+  componentDidUpdate = async prevProps => {
+    if (this.props.blocknumber !== prevProps.blocknumber) {
+      await this.updateData();
+    }
   };
 
   componentDidMount = async () => {
-    const { channelid, blocknumber, setCurrentBlockNumber } = this.props;
-
-    this.updateData();
+    await this.updateData();
   };
 
   prevClick = e => {
@@ -115,25 +115,17 @@ class Block extends Component {
 
   genesisClick = e => {
     e.preventDefault();
-    // this.props.setCurrentBlockNumber(0);
     this.props.history.push("/channel/0");
   };
 
   latestClick = e => {
     e.preventDefault();
-    // this.props.setCurrentBlockNumber(this.props.numberofblocks);
     this.props.history.push(`/channel/${this.props.numberofblocks}`);
-
-    // this.props.history.push("/channel");
   };
 
   render() {
     const { blocknumber, numberofblocks } = this.props;
-    console.log("blocknumber", blocknumber);
-    console.log("numberofblocks", numberofblocks);
     const number = (blocknumber || 0) + 1 + "/" + (numberofblocks + 1);
-
-    console.log(number);
 
     let pre = <span> &nbsp; </span>;
     if (blocknumber > 0) {
@@ -160,8 +152,8 @@ class Block extends Component {
         </div>
         <p>
           <a onClick={this.rawClick}>Raw</a> |
-          <a onClick={this.genesisClick}>Genesis</a> |
-          <a onClick={this.latestClick}>Latest</a>
+          <a onClick={this.genesisClick}> Genesis</a> |
+          <a onClick={this.latestClick}> Latest</a>
         </p>
         <p>
           <b>Number:</b> {pre} {number} {next}
@@ -191,6 +183,7 @@ const BlockWithState = props => (
     {({
       setNumberOfBlocks,
       setCurrentBlockNumber,
+      setCurrentBlockData,
       state: {
         channelid,
         currentblocknumber: blocknumber,
@@ -203,7 +196,8 @@ const BlockWithState = props => (
           blocknumber,
           numberofblocks,
           setNumberOfBlocks,
-          setCurrentBlockNumber
+          setCurrentBlockNumber,
+          setCurrentBlockData
         }}
         {...props}
       />

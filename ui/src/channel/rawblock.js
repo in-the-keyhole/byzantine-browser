@@ -14,44 +14,54 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from "react";
-
+import React from "react";
 import jsonFormatter from "json-format";
+import { Subscribe } from "unstated";
+import ChannelContainer from "../ChannelContainer";
 
-class RawBlock extends Component {
-  constructor(props) {
-    super(props);
-    this.channelid = this.props.match.params.channelid;
-    this.blocknumber = Number(this.props.match.params.blocknumber) + 1;
-    this.block = jsonFormatter(
-      JSON.parse(localStorage.getItem("currentblock"))
-    );
-    this.blocks = Number(localStorage.getItem("blocks")) + 1;
-  }
-
-  componentDidMount() {
-    console.log(this.block);
-  }
-
-  render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <h4>
-              <b>Block:</b> {this.blocknumber} <b> of </b> {this.blocks}{" "}
-            </h4>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-12">
-            <textarea rows="30" cols="120" value={this.block} />
-          </div>
+const RawBlock = ({
+  match: {
+    params: { blocknumber }
+  },
+  blocks,
+  currentBlockData
+}) =>
+  currentBlockData ? (
+    <div className="container">
+      <div className="row">
+        <div className="col-md-12">
+          <h4>
+            <b>Block:</b> {+blocknumber + 1} <b> of </b> {+blocks + 1}
+          </h4>
         </div>
       </div>
-    );
-  }
-}
 
-export default RawBlock;
+      <div className="row">
+        <div className="col-md-12">
+          <textarea
+            rows="30"
+            cols="120"
+            value={jsonFormatter(currentBlockData)}
+          />
+        </div>
+      </div>
+    </div>
+  ) : (
+    <p>No block data available.</p>
+  );
+
+const BlockWithState = props => (
+  <Subscribe to={[ChannelContainer]}>
+    {({ state: { currentBlockData, blocks } }) => (
+      <RawBlock
+        {...{
+          currentBlockData,
+          blocks
+        }}
+        {...props}
+      />
+    )}
+  </Subscribe>
+);
+
+export default BlockWithState;

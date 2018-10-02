@@ -70,7 +70,7 @@ class Transactions extends Component {
       setInterval(async () => {
         let start = new Date().getTime();
         try {
-          const rateResult = await axios({
+          await axios({
             // using axios directly to avoid redirect interceptor
             method: "post",
             url: "/txproposalrate",
@@ -89,10 +89,9 @@ class Transactions extends Component {
           };
 
           this.chart.datum(obj);
-          var json = JSON.parse(JSON.stringify(rateResult.data));
 
           if (ms >= this.state.ceiling || ms <= this.state.floor) {
-            over++;
+            over = over + 1;
             const ceiling = ms + 10;
             const floor = ms - 10;
             this.chart.yDomain(this.generateY(floor, ceiling));
@@ -110,8 +109,7 @@ class Transactions extends Component {
 
   createChart = blocknumber => {
     // invoke the chart
-    var chartDiv = d3
-      .select("#tx")
+    d3.select("#tx")
       .append("div")
       .attr("id", "tx")
       .call(this.chart);

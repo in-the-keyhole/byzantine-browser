@@ -21,88 +21,81 @@ import "react-table/react-table.css";
 import { config } from "../Config.js";
 
 class Transactions extends Component {
-  constructor(props) {
-    super(props);
-    this.channelid = props.channelid;
-    this.state = { block: "" };
-    this.blocknumber = Number(props.blocknumber);
-    this.writesets = [];
-    this.readsets = [];
-    this.endorsearray = null;
-  }
+  state = { block: "", writesets: [], readsets: [] };
 
-  componentDidMount() {
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/block",
-      baseURL: config.apiserver,
-      data: { channelid: self.channelid, blocknumber: this.blocknumber }
-    })
-      .then(function(res) {
-        let json = JSON.parse(JSON.stringify(res.data));
-        let writes = null;
-        let reads = null;
-        let txarray = json.data.data.map(t => {
-          let lang =
-            t.payload.data.actions[0].payload.chaincode_proposal_payload.input
-              .chaincode_spec.typeString;
-          //let proposalhash = t.payload.data.actions[0].proposal_response_payload.proposal_hash;
-          let chaincode =
-            t.payload.data.actions[0].payload.chaincode_proposal_payload.input
-              .chaincode_spec.chaincode_id.name;
-          let rwsets =
-            t.payload.data.actions[0].payload.action.proposal_response_payload
-              .extension.results.ns_rwset;
-          let endorsements =
-            t.payload.data.actions[0].payload.action.endorsements;
+  componentDidMount = async () => {
+    const { channelid, blocknumber } = this.props;
+    try {
+      const res = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: "/block",
+        baseURL: config.apiserver,
+        data: { channelid, blocknumber }
+      });
+      let json = JSON.parse(JSON.stringify(res.data));
+      let writes = null;
+      let reads = null;
+      let txarray = json.data.data.map(t => {
+        let lang =
+          t.payload.data.actions[0].payload.chaincode_proposal_payload.input
+            .chaincode_spec.typeString;
+        //let proposalhash = t.payload.data.actions[0].proposal_response_payload.proposal_hash;
+        let chaincode =
+          t.payload.data.actions[0].payload.chaincode_proposal_payload.input
+            .chaincode_spec.chaincode_id.name;
+        let rwsets =
+          t.payload.data.actions[0].payload.action.proposal_response_payload
+            .extension.results.ns_rwset;
+        let endorsements =
+          t.payload.data.actions[0].payload.action.endorsements;
 
-          let warray = rwsets.map(rw => {
-            let writeset = {};
-            writeset["namespace"] = rw.namespace;
-            writes = rw.rwset.writes.map(s => {
-              return s.key + " = " + s.value + "  ";
-            });
-            writeset["set"] = writes;
-            return writeset;
+        let warray = rwsets.map(rw => {
+          let writeset = {};
+          writeset["namespace"] = rw.namespace;
+          writes = rw.rwset.writes.map(s => {
+            return s.key + " = " + s.value + "  ";
           });
-
-          let rarray = rwsets.map(rw => {
-            let readset = {};
-            readset["namespace"] = rw.namespace;
-            reads = rw.rwset.reads.map(s => {
-              return s.key + " = " + s.value + "  ";
-            });
-            readset["set"] = reads;
-            return readset;
-          });
-
-          self.endorsearray = endorsements.map(e => {
-            return e.endorser.Mspid;
-          });
-
-          self.writesets.push(warray);
-          self.readsets.push(rarray);
-
-          return {
-            txid: t.payload.header.channel_header.tx_id,
-            type: t.payload.header.channel_header.typeString,
-            createdby: t.payload.header.signature_header.creator.Mspid,
-            chaincode: chaincode + "(" + lang + ")",
-            endorsements: self.endorsearray
-          };
+          writeset["set"] = writes;
+          return writeset;
         });
 
-        self.setState({ transactions: txarray });
-      })
-      .catch(function(err) {
-        self.setState({ loginError: "Error Accessing Channel" });
+        let rarray = rwsets.map(rw => {
+          let readset = {};
+          readset["namespace"] = rw.namespace;
+          reads = rw.rwset.reads.map(s => {
+            return s.key + " = " + s.value + "  ";
+          });
+          readset["set"] = reads;
+          return readset;
+        });
+
+        const endorsearray = endorsements.map(e => {
+          return e.endorser.Mspid;
+        });
+
+        this.setState(state => ({
+          writesets: state.writesets.concat(warray),
+          readsets: state.readsets.concat(rarray)
+        }));
+
+        return {
+          txid: t.payload.header.channel_header.tx_id,
+          type: t.payload.header.channel_header.typeString,
+          createdby: t.payload.header.signature_header.creator.Mspid,
+          chaincode: chaincode + "(" + lang + ")",
+          endorsements: endorsearray
+        };
       });
-  }
+
+      this.setState({ transactions: txarray });
+    } catch (error) {
+      this.setState({ loginError: "Error Accessing Channel" });
+    }
+  };
 
   render() {
-    let data = this.state.transactions;
+    const { transactions: data, writesets: ws, readsets: rs } = this.state;
 
     const columns = [
       {
@@ -128,9 +121,6 @@ class Transactions extends Component {
       }
     ];
 
-    var ws = this.writesets;
-    var rs = this.readsets;
-
     return (
       <div className="card">
         <div className="card-block">
@@ -142,30 +132,27 @@ class Transactions extends Component {
             columns={columns}
             defaultPageSize={10}
             SubComponent={row => {
+              console.log(row);
               return (
                 <div>
                   <p>
                     <b> Reads </b>
                   </p>
-                  {rs[row.index].map(r => {
-                    return (
-                      <div>
-                        <p> Namespace: {r.namespace} </p>
-                        <p> {r.set}</p>
-                      </div>
-                    );
-                  })}
+                  {rs.map((r, i) => (
+                    <div key={i}>
+                      <p> Namespace: {r.namespace} </p>
+                      <p> {r.set}</p>
+                    </div>
+                  ))}
                   <p>
                     <b> Writes </b>
                   </p>
-                  {ws[row.index].map(w => {
-                    return (
-                      <div>
-                        <p> Namespace: {w.namespace} </p>
-                        <p> {w.set}</p>
-                      </div>
-                    );
-                  })}
+                  {ws.map((w, i) => (
+                    <div key={i}>
+                      <p> Namespace: {w.namespace} </p>
+                      <p> {w.set}</p>
+                    </div>
+                  ))}
                 </div>
               );
             }}

@@ -22,84 +22,75 @@ import { config } from "../Config.js";
 class Info extends Component {
   constructor(props) {
     super(props);
-    this.channelid = props.channelid;
     this.state = { info: "", chaincodes: "" };
 
     subscribeToBlocks((err, blocks) =>
       this.setState({
-        blocks: blocks
+        blocks
       })
     );
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    const { channelid } = this.props;
     console.log("Accessing channels");
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/blockinfo?channelid=" + self.channelid,
-      baseURL: config.apiserver,
-      data: { channelid: self.channelid }
-    })
-      .then(function(res) {
-        // alert (JSON.stringify(res.data));
-        var json = JSON.parse(JSON.stringify(res.data));
-
-        var hash = "";
-        var bytes = json.currentBlockHash.buffer.data;
-        var count = bytes.length;
-        for (var index = 0; index < bytes.length; index += 1) {
-          hash += String.fromCharCode(bytes[index]);
-        }
-
-        self.setState({ blocks: json.height.low, currentBlockhash: hash });
-      })
-      .catch(function(err) {
-        self.setState({ loginError: "Error Accessing Channel" });
+    try {
+      const res = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: `/blockinfo?channelid=${channelid}`,
+        baseURL: config.apiserver,
+        data: { channelid }
       });
+      const blockinfoJson = JSON.parse(JSON.stringify(res.data));
+
+      let hash = "";
+      const bytes = blockinfoJson.currentBlockHash.buffer.data;
+      for (let index = 0; index < bytes.length; index += 1) {
+        hash += String.fromCharCode(bytes[index]);
+      }
+
+      this.setState({
+        blocks: blockinfoJson.height.low,
+        currentBlockhash: hash
+      });
+    } catch (error) {
+      this.setState({ loginError: "Error Accessing Channel" });
+    }
 
     // Get Chaincode
-
-    var self = this;
-    axios({
-      // using axios directly to avoid redirect interceptor
-      method: "post",
-      url: "/chaincodes?channelid=" + self.channelid,
-      baseURL: config.apiserver,
-      data: { channelid: self.channelid }
-    })
-      .then(function(res) {
-        // alert (JSON.stringify(res.data));
-        var json = JSON.parse(JSON.stringify(res.data));
-
-        var cd = json.chaincodes;
-        var list = "";
-        for (var i = 0; i < cd.length; i++) {
-          list += "name: " + cd[i].name + " version: " + cd[i].version + "\n";
-        }
-        var hash = "";
-        // var bytes = json.currentBlockHash.buffer.data;
-        // var count = bytes.length;
-        // for(var index = 0; index < bytes.length; index += 1) {
-        //  hash += String.fromCharCode(bytes[index]);
-        //}
-
-        self.setState({ chaincodes: list });
-      })
-      .catch(function(err) {
-        self.setState({ loginError: "Error Accessing Channel" });
+    try {
+      const result = await axios({
+        // using axios directly to avoid redirect interceptor
+        method: "post",
+        url: `/chaincodes?channelid=${channelid}`,
+        baseURL: config.apiserver,
+        data: { channelid }
       });
-  }
+      const chaincodeJson = JSON.parse(JSON.stringify(result.data));
+
+      const cd = chaincodeJson.chaincodes;
+      let list = "";
+      for (let i = 0; i < cd.length; i++) {
+        list += "name: " + cd[i].name + " version: " + cd[i].version + "\n";
+      }
+
+      this.setState({ chaincodes: list });
+    } catch (error) {
+      this.setState({ loginError: "Error Accessing Channel" });
+    }
+  };
 
   render() {
+    const { channelid } = this.props;
+
     return (
       <div className="card">
         <div className="card-block">
           <h3 className="card-title">Blockchain Info</h3>
         </div>
         <p>
-          <b>Channel:</b> {this.channelid}
+          <b>Channel:</b> {channelid}
         </p>
         <p>
           <b># Blocks:</b> {this.state.blocks}

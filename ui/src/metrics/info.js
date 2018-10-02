@@ -43,15 +43,14 @@ class Info extends Component {
           baseURL: config.apiserver,
           data: { channelid, blocknumber: 0 }
         });
-        var json = JSON.parse(JSON.stringify(res.data));
+        const blockJson = JSON.parse(JSON.stringify(res.data));
         this.setState({
-          date: json.data.data[0].payload.header.channel_header.timestamp
+          date: blockJson.data.data[0].payload.header.channel_header.timestamp
         });
       } catch (error) {
         console.log(error);
       }
 
-      let start = new Date().getTime();
       try {
         const blockInfo = await axios({
           // using axios directly to avoid redirect interceptor
@@ -60,8 +59,8 @@ class Info extends Component {
           baseURL: config.apiserver,
           data: { channelid }
         });
-        var json = JSON.parse(JSON.stringify(blockInfo.data));
-        let blocks = json.height.low;
+        var blockinfoJson = JSON.parse(JSON.stringify(blockInfo.data));
+        let blocks = blockinfoJson.height.low;
 
         this.setState({ height: blocks });
       } catch (error) {
