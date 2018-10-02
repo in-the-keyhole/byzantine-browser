@@ -23,7 +23,17 @@ import { config } from "../Config.js";
 class Transactions extends Component {
   state = { block: "", writesets: [], readsets: [] };
 
+  componentDidUpdate = async prevProps => {
+    if (this.props.blocknumber !== prevProps.blocknumber) {
+      await this.updateData();
+    }
+  };
+
   componentDidMount = async () => {
+    await this.updateData();
+  };
+
+  async updateData() {
     const { channelid, blocknumber } = this.props;
     try {
       const res = await axios({
@@ -49,7 +59,6 @@ class Transactions extends Component {
             .extension.results.ns_rwset;
         let endorsements =
           t.payload.data.actions[0].payload.action.endorsements;
-
         let warray = rwsets.map(rw => {
           let writeset = {};
           writeset["namespace"] = rw.namespace;
@@ -59,7 +68,6 @@ class Transactions extends Component {
           writeset["set"] = writes;
           return writeset;
         });
-
         let rarray = rwsets.map(rw => {
           let readset = {};
           readset["namespace"] = rw.namespace;
@@ -69,16 +77,13 @@ class Transactions extends Component {
           readset["set"] = reads;
           return readset;
         });
-
         const endorsearray = endorsements.map(e => {
           return e.endorser.Mspid;
         });
-
         this.setState(state => ({
           writesets: state.writesets.concat(warray),
           readsets: state.readsets.concat(rarray)
         }));
-
         return {
           txid: t.payload.header.channel_header.tx_id,
           type: t.payload.header.channel_header.typeString,
@@ -87,12 +92,11 @@ class Transactions extends Component {
           endorsements: endorsearray
         };
       });
-
       this.setState({ transactions: txarray });
     } catch (error) {
       this.setState({ loginError: "Error Accessing Channel" });
     }
-  };
+  }
 
   render() {
     const { transactions: data, writesets: ws, readsets: rs } = this.state;
