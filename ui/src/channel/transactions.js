@@ -95,7 +95,9 @@ class Transactions extends Component {
           type: t.payload.header.channel_header.typeString,
           createdby: t.payload.header.signature_header.creator.Mspid,
           chaincode: chaincode + "(" + lang + ")",
-          endorsements: endorsearray
+          endorsements: endorsearray,
+          reads: rarray,
+          writes: warray
         };
       });
       this.setState({ transactions: txarray });
@@ -148,21 +150,27 @@ class Transactions extends Component {
                   <p>
                     <b> Reads </b>
                   </p>
-                  {rs.map((r, i) => (
+
+                  {row.original.reads.map((r, i) => (
                     <div key={i}>
                       <p> Namespace: {r.namespace} </p>
-                      <p> {r.set}</p>
+                      <p> {r.set[0]}</p>
                     </div>
                   ))}
+
                   <p>
                     <b> Writes </b>
                   </p>
-                  {ws.map((w, i) => (
+                  {row.original.writes.map((r, i) => (
                     <div key={i}>
-                      <p> Namespace: {w.namespace} </p>
-                      <p> {w.set}</p>
+                      <p> Namespace: {r.namespace} </p>
+                      {r.set.map((w) => (
+                        <p> {r.set[0]}</p>
+                      ))}
                     </div>
                   ))}
+
+
                 </div>
               );
             }}
