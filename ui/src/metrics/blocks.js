@@ -25,6 +25,7 @@ class Blocks extends Component {
     super(props);
     let blocks = Number(props.blocknumber);
 
+
     // create the real time chart
     this.chart = realTimeChartMulti()
       .width(900) // width in pixels of chart; mandatory
@@ -50,7 +51,7 @@ class Blocks extends Component {
 
   componentDidMount() {
     const { channelid, blocknumber } = this.props;
-    const ceiling = blocknumber + 10;
+    const ceiling = Number(blocknumber) + 10;
     // invoke the chart
     d3.select("#blocks")
       .append("div")

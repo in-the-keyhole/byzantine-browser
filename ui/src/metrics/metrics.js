@@ -23,18 +23,18 @@ import { Redirect } from "react-router";
 import { Subscribe } from "unstated";
 import ChannelContainer from "../ChannelContainer.js";
 
-const Metrics = ({ channelid, blocknumber }) =>
+const Metrics = ({ channelid, blocks }) =>
   channelid ? (
     <div className="container">
       <div className="row">
         <div className="col-md-12">
-          <Info channelid={channelid} blocknumber={blocknumber} />
+          <Info channelid={channelid} blocknumber={blocks} />
         </div>
       </div>
 
       <div className="row">
         <div className="col-md-12">
-          <Blocks channelid={channelid} blocknumber={blocknumber} />
+          <Blocks channelid={channelid} blocknumber={blocks} />
           <div id="realtime" />
         </div>
 
@@ -51,8 +51,8 @@ const Metrics = ({ channelid, blocknumber }) =>
 
 const MetricsWithState = props => (
   <Subscribe to={[ChannelContainer]}>
-    {({ state: { channelid, blocknumber } }) => (
-      <Metrics {...{ channelid, blocknumber }} {...props} />
+    {({ state: { channelid, blocks } }) => (
+      <Metrics {...{ channelid, blocks }} {...props} />
     )}
   </Subscribe>
 );
