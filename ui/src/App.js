@@ -3,7 +3,14 @@ import "./App.css";
 
 import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 
-import { Navbar, Nav, NavItem } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  NavItem,
+  FormGroup,
+  FormControl,
+  Button
+} from "react-bootstrap";
 
 import Home from "./Home.js";
 import Channel from "./channel/channel.js";
@@ -13,31 +20,28 @@ import SelectChannel from "./SelectChannel.js";
 
 import { Provider, Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer";
+import ChannelInputHandler from "./ChannelInputHandler";
 
-const Main = () => (
-  <Subscribe to={[ChannelContainer]}>
-    {({ state: { blocks: numberofblocks } }) => (
-      <main>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/select" component={SelectChannel} />
-          {/* <Route exact path="/channel" component={Channel} /> */}
-          <Redirect exact from="/channel" to={`/channel/${numberofblocks}`} />
+const Main = ({ numberofblocks }) => (
+  <main>
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/select" component={SelectChannel} />
+      {/* <Route exact path="/channel" component={Channel} /> */}
+      <Redirect exact from="/channel" to={`/channel/${numberofblocks}`} />
 
-          <Route exact path="/channel/:blocknumber" component={Channel} />
-          <Route exact path="/metrics" component={Metrics} />
-          <Route
-            exact
-            path="/rawblock/:channelid/:blocknumber"
-            component={RawBlock}
-          />
-        </Switch>
-      </main>
-    )}
-  </Subscribe>
+      <Route exact path="/channel/:blocknumber" component={Channel} />
+      <Route exact path="/metrics" component={Metrics} />
+      <Route
+        exact
+        path="/rawblock/:channelid/:blocknumber"
+        component={RawBlock}
+      />
+    </Switch>
+  </main>
 );
 
-const Layout = () => (
+const Layout = ({ numberofblocks, channelid }) => (
   <div>
     <BrowserRouter>
       <div>
@@ -50,38 +54,60 @@ const Layout = () => (
                 </a>
               </Navbar.Brand>
             </Navbar.Header>
-            <Nav pullRight>
-              <NavItem
-                eventKey={3}
-                href="/select"
-                to="/select"
-                componentClass={Link}
-              >
-                SelectChannel
-              </NavItem>
-              <NavItem
-                eventKey={3}
-                href="/channel"
-                to="/channel"
-                componentClass={Link}
-              >
-                Blocks
-              </NavItem>
-              <NavItem
-                eventKey={5}
-                href="/metrics"
-                to="/metrics"
-                componentClass={Link}
-              >
-                Metrics
-              </NavItem>
-            </Nav>
+            <Navbar.Collapse>
+              <Nav pullRight>
+                {channelid && (
+                  <ChannelInputHandler>
+                    {({ handleSubmit, handleInputChange, error }) => (
+                      <Navbar.Form pullRight>
+                        <form onSubmit={handleSubmit}>
+                          <FormGroup>
+                            <FormControl
+                              type="text"
+                              name="channelid"
+                              defaultValue={channelid}
+                              placeholder="Channel Name"
+                              onChange={handleInputChange}
+                            />
+                          </FormGroup>{" "}
+                          <Button type="submit">Browse</Button>
+                        </form>
+                      </Navbar.Form>
+                    )}
+                  </ChannelInputHandler>
+                )}
+                <NavItem
+                  eventKey={3}
+                  href="/select"
+                  to="/select"
+                  componentClass={Link}
+                >
+                  SelectChannel
+                </NavItem>
+                <NavItem
+                  eventKey={3}
+                  href="/channel"
+                  to="/channel"
+                  componentClass={Link}
+                >
+                  Blocks
+                </NavItem>
+                <NavItem
+                  eventKey={5}
+                  href="/metrics"
+                  to="/metrics"
+                  componentClass={Link}
+                >
+                  Metrics
+                </NavItem>
+              </Nav>
+            </Navbar.Collapse>
           </Navbar>
         </div>
         <div className="container">
           <div className="row">
             <div>
-              <Main />
+              <Main {...{ numberofblocks }} />
             </div>
           </div>
         </div>
@@ -92,7 +118,11 @@ const Layout = () => (
 
 const App = () => (
   <Provider>
-    <Layout />
+    <Subscribe to={[ChannelContainer]}>
+      {({ state: { blocks: numberofblocks, channelid } }) => (
+        <Layout {...{ numberofblocks, channelid }} />
+      )}
+    </Subscribe>
   </Provider>
 );
 

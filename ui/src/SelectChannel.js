@@ -15,60 +15,14 @@ limitations under the License.
 */
 
 import React, { Component } from "react";
-import axios from "axios";
-import { config } from "./Config.js";
 import { Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer.js";
 import { Redirect } from "react-router";
+import ChannelInputHandler from "./ChannelInputHandler.js";
 
 class SelectChannel extends Component {
-  state = { channelid: "", error: "" };
-
-  handleInputChange = ev => {
-    const target = ev.target;
-    this.setState({ [target.name]: target.value, error: "" });
-  };
-
-  handleSubmit = async ev => {
-    ev.preventDefault();
-    console.log(this.props);
-    const { resetChannelId, setChannelInfo } = this.props;
-    // remove old before fetchin a new one
-    // localStorage.removeItem("channelid");
-    resetChannelId();
-    try {
-      const res = await axios({
-        // using axios directly to avoid redirect interceptor
-        method: "post",
-        url: "/blockinfo",
-        baseURL: config.apiserver,
-        data: this.state
-      });
-      console.log(res.data);
-
-      if (res.data && res.data !== "") {
-        //   localStorage.setItem("blocks", res.data.height.low - 1);
-        //   localStorage.setItem("currentblocknumber", res.data.height.low - 1);
-        //   localStorage.setItem("channelid", self.state.channelid);
-
-        setChannelInfo({
-          blocks: res.data.height.low - 1,
-          currentblocknumber: res.data.height.low - 1,
-          channelid: this.state.channelid
-        });
-      } else {
-        this.setState({ error: "Channel not found..." });
-        //   localStorage.removeItem("channelid");
-        resetChannelId();
-      }
-    } catch (error) {
-      console.log("ERROR " + error);
-    }
-  };
-
   render() {
-    const { error } = this.state;
-    const { channelid } = this.props;
+    const { channelid, setChannelInfo, error } = this.props;
 
     return channelid ? (
       <Redirect to="/channel" />
@@ -78,27 +32,31 @@ class SelectChannel extends Component {
         <p className="lead">Browse Blocks and Transaction Data</p>
         <hr className="my-4" />
         <p>Input Channel name to Browse</p>
-        <form className="form" onSubmit={this.handleSubmit}>
-          <p>
-            <input
-              type="text"
-              className="form-control"
-              name="channelid"
-              placeholder="Channel Id"
-              onChange={this.handleInputChange}
-            />
-          </p>
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {error}
-            </div>
+        <ChannelInputHandler {...{ setChannelInfo }}>
+          {({ handleSubmit, handleInputChange }) => (
+            <form className="form" onSubmit={handleSubmit}>
+              <p>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="channelid"
+                  placeholder="Channel Id"
+                  onChange={handleInputChange}
+                />
+              </p>
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
+              <p className="lead">
+                <button type="submit" className="btn btn-primary btn-lg">
+                  Browse
+                </button>
+              </p>
+            </form>
           )}
-          <p className="lead">
-            <button type="submit" className="btn btn-primary btn-lg">
-              Browse
-            </button>
-          </p>
-        </form>
+        </ChannelInputHandler>
       </div>
     );
   }
@@ -106,11 +64,8 @@ class SelectChannel extends Component {
 
 const SelectChannelWithState = props => (
   <Subscribe to={[ChannelContainer]}>
-    {({ setChannelInfo, resetChannelId, state: { channelid } }) => (
-      <SelectChannel
-        {...{ setChannelInfo, resetChannelId, channelid }}
-        {...props}
-      />
+    {({ setChannelInfo, state: { channelid, error } }) => (
+      <SelectChannel {...{ setChannelInfo, channelid, error }} {...props} />
     )}
   </Subscribe>
 );

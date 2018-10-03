@@ -21,7 +21,7 @@ import "react-table/react-table.css";
 import { config } from "../Config.js";
 
 class Transactions extends Component {
-  state = { block: "", writesets: [], readsets: [] };
+  state = { block: "", writesets: [], readsets: [], transactions: undefined };
 
   componentDidUpdate = async prevProps => {
     if (this.props.blocknumber !== prevProps.blocknumber) {
@@ -35,6 +35,12 @@ class Transactions extends Component {
 
   async updateData() {
     const { channelid, blocknumber } = this.props;
+    // clear any previous transaction data
+    this.setState(() => ({
+      transactions: undefined,
+      writesets: [],
+      readsets: []
+    }));
     try {
       const res = await axios({
         // using axios directly to avoid redirect interceptor

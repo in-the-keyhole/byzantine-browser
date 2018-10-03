@@ -5,8 +5,11 @@ class ChannelContainer extends Container {
     blocks: undefined,
     currentblocknumber: undefined,
     channelid: undefined,
-    currentBlockData: undefined
+    currentBlockData: undefined,
+    error: undefined
   };
+
+  setError = async error => await this.setState({ error });
 
   resetChannelId = async () => await this.setState({ channelid: undefined });
 
