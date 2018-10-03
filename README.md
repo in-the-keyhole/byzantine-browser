@@ -50,7 +50,6 @@ Here is an example public/private and user file in the `hfc-key-store` directory
 
 ```
     $ ./runApiServer.sh 
-    $ cd ui 
     $ npm start 
 ```
 
