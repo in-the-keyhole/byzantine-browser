@@ -24,11 +24,11 @@ class Info extends Component {
     super(props);
     this.state = { info: "", chaincodes: "" };
 
-    subscribeToBlocks((err, blocks) =>
+    subscribeToBlocks((err, blocks) => {
       this.setState({
-        blocks
+        blocks: blocks
       })
-    );
+    });
   }
 
   componentDidMount = async () => {

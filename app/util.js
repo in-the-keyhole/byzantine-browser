@@ -76,7 +76,7 @@ var connectChannel = function (channel_id) {
             channelid = channel_id;
             let channel_event_hub = channel.newChannelEventHub(peer);
 
-        
+
 
             add(channel_id,channel);
             // keep the block_reg to unregister with later if needed

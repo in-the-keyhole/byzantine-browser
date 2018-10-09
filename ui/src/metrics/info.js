@@ -25,11 +25,12 @@ class Info extends Component {
 
     this.state = { height: props.blocknumber, date: "" };
 
-    subscribeToBlocks((err, blocks: props.blocknumber) =>
+    subscribeToBlocks((err, blocks: props.blocknumber) => {
+  
       this.setState({
         height: blocks
       })
-    );
+    });
   }
 
   componentDidMount() {

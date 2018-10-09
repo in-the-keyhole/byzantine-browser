@@ -28,10 +28,13 @@ class Block extends Component {
     super(props);
     this.channelid = props.channelid;
     this.state = { block: "" };
+    let self = this;
 
     subscribeToBlocks(function(err, blocks) {
       const numberOfBlocks = Number(blocks) - 1;
-      this.props.setNumberOfBlocks(numberOfBlocks);
+      self.props.setNumberOfBlocks(numberOfBlocks);
+      self.setState({block: numberOfBlocks });
+     
     });
   }
 

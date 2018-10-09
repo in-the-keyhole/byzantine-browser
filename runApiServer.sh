@@ -11,4 +11,5 @@ mkdir -p ~/.hfc-key-store
 cp hfc-key-store/* ~/.hfc-key-store
 
 # Run Node App
-PORT=4001 node --inspect app 
+# DEBUG  command: PORT=4001 node --inspect app 
+PORT=4001 node app
