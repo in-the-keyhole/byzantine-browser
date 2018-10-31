@@ -1,12 +1,20 @@
 # khs-blockchain-browser
-KHS Blockchain Browser
 
+The KHS Blockchain Browser is an open source analytics tool that gives developers and operators of Hyperledger blockchain networks real-time visibility into transactions and blocks as they are added to a HLF network. 
 
-React/Node.js web application that allows you to browse and observe real-time activity in Hyperledger blockchain networks.
+Blockchain Browser is a React/Node.js web application with which a persistent database is not required. The Blockchain Browser "browses" the block store directly using the Fabric Node.js SDK. 
+
+#### View a three-minute video of the Blockchain Browser in action [here](https://youtu.be/yu96eA8GstQ).
+
+Please see below for installation and startup instructions. 
+
+## Screenshots 
+
+#### Real-time Block Information
 
 ![](images/khs-block-browser.png)
 
-### Real-time Blockchain Metrics
+#### Real-time Blockchain Metrics
 
 ![](images/blockbrowsermetrics.png)
 
@@ -56,3 +64,8 @@ Here is an example public/private and user file in the `hfc-key-store` directory
 5. Browse to [`http://localhost:8080`](http://localhost:8080).
 
 Note: to change the port, edit file `./ui/package.json`.
+
+## Feedback
+Please let us know if you have questions - asktheteam@keyholesoftware.com. 
+
+We at [Keyhole](https://keyholesoftware.com) are working to add new features all the time and would love your feedback.
