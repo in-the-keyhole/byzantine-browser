@@ -39,7 +39,8 @@ class Transactions extends Component {
     this.setState(() => ({
       transactions: undefined,
       writesets: [],
-      readsets: []
+      readsets: [],
+      cfg: undefined
     }));
     try {
       const res = await axios({
@@ -52,6 +53,18 @@ class Transactions extends Component {
       let json = JSON.parse(JSON.stringify(res.data));
       let writes = null;
       let reads = null;
+      let isconfig = json.data.data[0].payload.header.channel_header.typeString == 'CONFIG';
+      this.setState({isconfig:isconfig});
+      if (blocknumber == 0) {
+       
+        let ordaddr = json.data.data[0].payload.data.config.channel_group.values.OrdererAddresses.value.addresses;
+        let hashingalgo = json.data.data[0].payload.data.config.channel_group.values.HashingAlgorithm.value.name;
+        let batchsize = json.data.data[0].payload.data.config.channel_group.groups.Orderer.values.BatchSize.value.max_message_count;
+        let batchtimeout = json.data.data[0].payload.data.config.channel_group.groups.Orderer.values.BatchTimeout.value.timeout;
+        let consensustype = json.data.data[0].payload.data.config.channel_group.groups.Orderer.values.ConsensusType.value.type;
+        this.setState({ orderers: ordaddr, hashingalgorithm: hashingalgo, batchsize: batchsize, consensustype: consensustype, batchtimeout: batchtimeout });
+
+      }
       let txarray = json.data.data.map(t => {
         let lang =
           t.payload.data.actions[0].payload.chaincode_proposal_payload.input
@@ -101,12 +114,68 @@ class Transactions extends Component {
         };
       });
       this.setState({ transactions: txarray });
+
     } catch (error) {
       this.setState({ loginError: "Error Accessing Channel" });
     }
   }
 
-  render() {
+  config() {
+
+    return (
+
+      <div className="container">
+
+        <div className="row bg-info">
+          <div className="col-md-12"> <h3>Configuration</h3></div>
+        </div>
+
+        <div className="row">
+
+          <div className="col-md-6">
+
+            <div className="card">
+              <div className="card-block">
+                <h4 className="card-title">Orderer</h4>
+              </div>
+              <div className="col-md-12">
+                <div><b>Consensus Type:</b> {this.state.consensustype}</div>
+                <div><b>Batch Size:</b> {this.state.batchsize}</div>
+                <div><b>Batch Timeout:</b> {this.state.batchtimeout}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+
+            <div className="card">
+              <div className="card-block">
+                <h4 className="card-title">Channel</h4>
+              </div>
+              <div className="col-md-12">
+                       
+                    <div>
+                      <b>Hashing Algorithm:</b> {this.state.hashingalgorithm}
+                    </div>
+                    <div>
+                      <b>Batch Size:</b> {this.state.batchsize}
+                    </div>
+               
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+    );
+  }
+
+
+  txtable() {
+
     const { transactions: data, writesets: ws, readsets: rs } = this.state;
 
     const columns = [
@@ -178,6 +247,16 @@ class Transactions extends Component {
         </div>
       </div>
     );
+
+  }
+
+
+  render() {
+
+    //return this.props.blocknumber == 0 ? this.config() : this.txtable();
+
+    return this.state.isconfig ? this.config() : this.txtable();
+
   }
 }
 
