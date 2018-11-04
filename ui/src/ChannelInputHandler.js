@@ -35,7 +35,8 @@ class ChannelInputHandler extends React.Component {
         });
       } else {
         setError("Channel not found... please try another.");
-        resetChannelId();
+        alert('Channel Not Found');
+       // resetChannelId();
       }
     } catch (error) {
       setError(error);
