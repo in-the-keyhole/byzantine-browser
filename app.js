@@ -33,6 +33,7 @@ var blockinfo = require('./app/blockinfo.js');
 var block = require('./app/block.js');
 var appconfig = require('./config.js');
 var chaincodes = require('./app/chaincodes.js');
+var channelconfig = require('./app/channelconfig.js');
 var txproposalrate = require('./app/transactionproposalrate.js');
 
 
@@ -171,6 +172,33 @@ app.post('/chaincodes', function (req, res) {
 			res.send(message);
 		});
 });
+
+
+// get block hash
+app.post('/channelconfig', function (req, res) {
+	logger.debug('================ Chaincodes ======================');
+
+	var channelid = req.body.channelid;
+	var blocknumber = req.body.blocknumber;
+
+	block.getBlock(channelid, blocknumber)
+		.then(function (response) {
+
+			var json = JSON.parse(response);
+			// Get last config block from Metadata
+			var configBlock = parseInt(json.metadata.metadata[1].value.index);
+			 
+			block.getBlock(channelid,configBlock)
+			.then(function (message) {
+				res.send(message);
+			});
+
+		});
+
+
+});
+
+
 
 
 

@@ -16,7 +16,7 @@ import Home from "./Home.js";
 import Channel from "./channel/channel.js";
 import Metrics from "./metrics/metrics.js";
 import RawBlock from "./channel/rawblock.js";
-import SelectChannel from "./SelectChannel.js";
+import ChannelConfig from "./configuration/channelconfig.js";
 
 import { Provider, Subscribe } from "unstated";
 import ChannelContainer from "./ChannelContainer";
@@ -26,7 +26,7 @@ const Main = ({ numberofblocks }) => (
   <main>
     <Switch>
       <Route exact path="/" component={Home} />
-      <Route exact path="/select" component={SelectChannel} />
+      <Route exact path="/config" component={ChannelConfig} />
       {/* <Route exact path="/channel" component={Channel} /> */}
       <Redirect exact from="/channel" to={`/channel/${numberofblocks}`} />
 
@@ -78,11 +78,11 @@ const Layout = ({ numberofblocks, channelid }) => (
                 )}
                 <NavItem
                   eventKey={3}
-                  href="/select"
-                  to="/select"
+                  href="/config"
+                  to="/config"
                   componentClass={Link}
                 >
-                  SelectChannel
+                  Configuration
                 </NavItem>
                 <NavItem
                   eventKey={3}

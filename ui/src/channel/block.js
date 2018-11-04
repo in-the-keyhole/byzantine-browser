@@ -155,7 +155,7 @@ class Block extends Component {
         <p>
           <a onClick={this.rawClick}>Raw</a> |
           <a onClick={this.genesisClick}> Genesis</a> |
-          <a onClick={this.latestClick}> Latest</a>
+          <a onClick={this.latestClick}> Latest</a> 
         </p>
         <p>
           <b>Number:</b> {pre} {number} {next}

@@ -122,8 +122,7 @@ class Transactions extends Component {
 
   config() {
 
-    return (
-
+    return ( 
       <div className="container">
 
         <div className="row bg-info">
@@ -167,8 +166,6 @@ class Transactions extends Component {
 
         </div>
       </div>
-
-
 
     );
   }
@@ -252,8 +249,6 @@ class Transactions extends Component {
 
 
   render() {
-
-    //return this.props.blocknumber == 0 ? this.config() : this.txtable();
 
     return this.state.isconfig ? this.config() : this.txtable();
 
