@@ -85,8 +85,8 @@ class ChannelConfig extends Component {
       <div className="container">
 
       <div className="row bg-info">
-        <div className="col-md-10"> <h4>Current Configuration as of: {this.state.lastupdate}</h4> </div>
-        <div className="col-md-2"> <h4> Blocks: {numberofblocks} </h4></div>
+        <div className="col-md-10"> <h4><b>Current Configuration as of:</b> {this.state.lastupdate}</h4> </div>
+        <div className="col-md-2"> <h4><b>Blocks:</b> {numberofblocks} </h4></div>
       </div>
 
       <div className="row">
@@ -126,53 +126,6 @@ class ChannelConfig extends Component {
 
       </div>
     </div>
-
-
-/*      
-     <div className="container">    
-
-         <div className="row bg-info">
-          <div className="col-md-12"> <h3>Configuration</h3></div>
-        </div>
-
- 
-     <div className="row">
-     
-         <h2><b>Blocks:</b> {numberofblocks}  </h2>  
-        
-     </div>
-
-    <div className="row">
-      <div className="col-md-6">
-      <div className="card">
-        <div className="card-block">
-          <h2 className="card-title"></h2>
-        </div>
-     <font size="5">
-        <p>
-          <b>Consensus Type:</b> {this.state.consensusType} 
-        </p>
-        <p>
-          <b>Hash Algorithm:</b> {this.state.hashAlgorithm} 
-        </p>
-        <p>
-          <b>Orderer Addresses:</b> {this.state.ordererAddresses} 
-        </p>
-        <p>
-          <b>Batch Timeout:</b> {this.state.batchTimeout} 
-        </p>
-        <p>
-          <b>Batch Size:</b> {this.state.batchSize} 
-        </p>   
-       </font>
-      </div>
-
-      </div>
-
-     </div>
-
-      </div>
-    */
  
     );
   }
