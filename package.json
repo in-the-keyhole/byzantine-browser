@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "cd ui && react-scripts build",
-    "postinstall": "cd ui && npm install",
+    "postinstall": "npm install --prefix ui",
     "server": "node app",
     "start": "npm-run-all -p server ui",
     "ui": "cd ui && npm start"
