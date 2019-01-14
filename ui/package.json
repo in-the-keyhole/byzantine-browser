@@ -1,6 +1,6 @@
 {
-  "name": "khs-block-browser",
-  "version": "0.1.0",
+  "name": "byzantine-blockchain-browser-ui",
+  "version": "0.0.1-SNAPSHOT",
   "private": true,
   "dependencies": {
     "@githubprimer/octicons-react": "^8.0.0",

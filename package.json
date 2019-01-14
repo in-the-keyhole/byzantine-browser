@@ -1,6 +1,6 @@
 {
-  "name": "uilab",
-  "version": "1.0.0",
+  "name": "byzantine-blockchain-browser",
+  "version": "0.0.1-SNAPSHOT",
   "description": "Server side (backend) code for the Byzantine Browser application.",
   "main": "app.js",
   "keywords": [
@@ -10,8 +10,7 @@
   ],
   "scripts": {
     "build": "react-scripts build",
-    "postinstall": "npm install --prefix ui",
-    "heroku-postbuild": "cd ui && npm install && npm start",
+    "heroku-postbuild": "cd ui && npm install --only=dev && npm install && npm start",
     "start": "node app"
   },
   "engines": {
