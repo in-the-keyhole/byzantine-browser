@@ -1,7 +1,7 @@
 {
   "name": "uilab",
   "version": "1.0.0",
-  "description": "A balance-transfer example node program to demonstrate using node.js SDK APIs",
+  "description": "Server side (backend) code for the Byzantine Browser application.",
   "main": "app.js",
   "keywords": [
     "fabric-client sample app",
@@ -11,9 +11,8 @@
   "scripts": {
     "build": "react-scripts build",
     "postinstall": "npm install --prefix ui",
-    "server": "node app",
-    "start": "npm-run-all -p server ui",
-    "ui": "cd ui && npm start"
+    "heroku-postbuild": "cd ui && npm install && npm start",
+    "start": "node app"
   },
   "engines": {
     "node": ">=6.9.5 <9"
