@@ -9,6 +9,7 @@
     "v1.0 fabric nodesdk sample"
   ],
   "scripts": {
+    "build": "cd ui && react-scripts build",
     "postinstall": "cd ui && npm install",
     "server": "node app",
     "start": "npm-run-all -p server ui",
