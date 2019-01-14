@@ -15,8 +15,7 @@
     "ui": "cd ui && npm start"
   },
   "engines": {
-    "node": ">=6.9.5 <7.0",
-    "npm": ">=3.10.10 <4.0"
+    "node": ">=6.9.5 <9"
   },
   "license": "Apache-2.0",
   "dependencies": {
