@@ -35,6 +35,7 @@ var appconfig = require('./config.js');
 var chaincodes = require('./app/chaincodes.js');
 var channelconfig = require('./app/channelconfig.js');
 var txproposalrate = require('./app/transactionproposalrate.js');
+var path = require('path');
 
 
 var hfc = require('fabric-client');
