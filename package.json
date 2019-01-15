@@ -9,7 +9,7 @@
     "v1.0 fabric nodesdk sample"
   ],
   "scripts": {
-    "build": "react-scripts build",
+    "build": "cd ui && react-scripts build",
     "heroku-postbuild": "cd ui && npm install",
     "server": "node app",
     "ui": "cd ui && npm start",
