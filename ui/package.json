@@ -23,8 +23,8 @@
     "json-format": "1.0.1"
   },
   "scripts": {
-    "start": "echo 'proxying to ${PORT}' && react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts start",
+    "build": "echo 'proxying to ${PORT}' && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
