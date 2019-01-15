@@ -16,7 +16,7 @@ limitations under the License.
 
 
 module.exports = {
-    port: process.env.PORT || 4001,
+    port: 4001,
     host: process.env.HOST || "localhost",
     loglevel: process.env.LOGLEVEL || "info",
     wallet_path: process.env.KEYSTORE || "../hfc-key-store",
