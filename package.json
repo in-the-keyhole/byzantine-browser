@@ -10,8 +10,10 @@
   ],
   "scripts": {
     "build": "react-scripts build",
-    "heroku-postbuild": "cd ui && npm install && npm start",
-    "start": "node app"
+    "heroku-postbuild": "cd ui && npm install",
+    "server": "node app",
+    "ui": "cd ui && npm start",
+    "start": "npm-run-all -p server ui"
   },
   "engines": {
     "node": ">=6.9.5 <9"
