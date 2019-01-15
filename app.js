@@ -71,6 +71,14 @@ app.get('*', function(request, response) {
 response.sendFile(path.resolve(__dirname, './ui/build', 'index.html'));
 });
 
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// START SERVER /////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+var server = http.createServer(app).listen(port, function () { });
+logger.info('****************** SERVER STARTED ************************');
+logger.info('**************  http://' + host + ':' + port +
+	'  ******************');
+server.timeout = 240000;
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// START WEBSOCKET SERVER /////////////////////////////////
@@ -214,19 +222,3 @@ app.post('/txproposalrate', function (req, res) {
 			res.send(message);
 		});
 });
-
-
-///////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// START SERVER /////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-var server = http.createServer(app).listen(port, function () { });
-logger.info('****************** SERVER STARTED ************************');
-logger.info('**************  http://' + host + ':' + port +
-	'  ******************');
-server.timeout = 240000;
-
-app._router.stack.forEach(function(r){
-	if (r.route && r.route.path){
-	  console.log(r.route.path)
-	}
-  })

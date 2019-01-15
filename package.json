@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "start": "node app",
-    "heroku-postbuild": "cd ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "start:dev": "cd ui/ && npm run build && npm start"
   },
   "engines": {
     "node": ">=6.9.5 <9"
