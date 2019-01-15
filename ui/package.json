@@ -8,9 +8,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4",
-    "unstated": "^2.1.1"
-  },
-  "devDependencies": {
+    "unstated": "^2.1.1",
     "axios": "^0.16.2",
     "react-bootstrap": "^0.31.0",
     "react-bootstrap-table": "^3.5.1",

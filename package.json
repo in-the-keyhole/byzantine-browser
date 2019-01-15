@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "react-scripts build",
-    "heroku-postbuild": "cd ui && npm install --only=dev && npm install && npm start",
+    "heroku-postbuild": "cd ui && npm install && npm start",
     "start": "node app"
   },
   "engines": {
