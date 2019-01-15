@@ -61,15 +61,14 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 
+// For heroku
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, './ui/build')));
 
-///////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// START SERVER /////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-var server = http.createServer(app).listen(port, function () { });
-logger.info('****************** SERVER STARTED ************************');
-logger.info('**************  http://' + host + ':' + port +
-	'  ******************');
-server.timeout = 240000;
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', function(request, response) {
+response.sendFile(path.resolve(__dirname, './ui/build', 'index.html'));
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -216,8 +215,17 @@ app.post('/txproposalrate', function (req, res) {
 });
 
 
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// START SERVER /////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+var server = http.createServer(app).listen(port, function () { });
+logger.info('****************** SERVER STARTED ************************');
+logger.info('**************  http://' + host + ':' + port +
+	'  ******************');
+server.timeout = 240000;
 
-
-
-
-
+app._router.stack.forEach(function(r){
+	if (r.route && r.route.path){
+	  console.log(r.route.path)
+	}
+  })
