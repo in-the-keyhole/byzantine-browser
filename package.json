@@ -9,11 +9,8 @@
     "v1.0 fabric nodesdk sample"
   ],
   "scripts": {
-    "build": "cd ui && react-scripts build",
-    "heroku-postbuild": "cd ui && npm install",
-    "server": "node app",
-    "ui": "cd ui && npm start",
-    "start": "npm-run-all -p server ui"
+    "start": "node app",
+    "heroku-postbuild": "cd ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "engines": {
     "node": ">=6.9.5 <9"
