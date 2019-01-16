@@ -35,7 +35,7 @@ class Info extends Component {
 
   componentDidMount() {
     const { channelid } = this.props;
-    setInterval(async () => {
+    this.interval = setInterval(async () => {
       try {
         const res = await axios({
           // using axios directly to avoid redirect interceptor
@@ -68,6 +68,10 @@ class Info extends Component {
         console.log(error);
       }
     }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.interval);
   }
 
   render() {

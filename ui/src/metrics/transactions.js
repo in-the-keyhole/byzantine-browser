@@ -53,6 +53,7 @@ class Transactions extends Component {
   componentWillUnmount() {
     // TODO - need to figure out how to tell the chart
     // to cancel subscriptions after component is unmounted
+    clearTimeout(this.interval);
   }
 
   componentDidMount = async () => {
@@ -72,7 +73,7 @@ class Transactions extends Component {
       let cdname = cd[0].name;
       let over = 0;
 
-      setInterval(async () => {
+      this.interval = setInterval(async () => {
         let start = new Date().getTime();
         try {
           await axios({

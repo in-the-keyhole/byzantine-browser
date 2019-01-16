@@ -58,7 +58,7 @@ class Blocks extends Component {
       .attr("id", "blocks")
       .call(this.chart);
 
-    setInterval(async () => {
+    this.interval = setInterval(async () => {
       try {
         const res = await axios({
           // using axios directly to avoid redirect interceptor
@@ -93,6 +93,10 @@ class Blocks extends Component {
         this.setState({ loginError: "Error acccesing api" });
       }
     }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.interval);
   }
 
   render() {
