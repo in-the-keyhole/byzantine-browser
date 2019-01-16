@@ -109,7 +109,7 @@ class ChannelConfig extends Component {
 
     if (this.state.orgs) {
       this.state.orgs.forEach((o) => {
-        orgs.push(<div><b>Org:</b> {o.name}</div>);
+        orgs.push(<div key={o.name}><b>Org:</b> {o.name}</div>);
       }
       );
     }
@@ -120,7 +120,7 @@ class ChannelConfig extends Component {
     if (this.state.policies) {
 
       this.state.policies.forEach((p) => {
-        policies.push(<div><b> {p.name}  Policy</b>: {p.policy.type}, {p.policy.value.rule} </div>);
+        policies.push(<div key={p.name}><b> {p.name}  Policy</b>: {p.policy.type}, {p.policy.value.rule} </div>);
       }
       );
 
