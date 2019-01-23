@@ -26,3 +26,4 @@ yarn-error.log*
 /ui/build
 
 .vscode
+/.history
