@@ -40,7 +40,7 @@ class SelectChannel extends Component {
                   type="text"
                   className="form-control"
                   name="channelid"
-                  placeholder="Channel Id"
+                  placeholder="Channel Id, enter `mychannel` to browser a test network..."
                   onChange={handleInputChange}
                 />
               </p>
