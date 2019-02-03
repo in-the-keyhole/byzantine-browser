@@ -4,6 +4,27 @@ The KHS Blockchain Browser is an open source analytics tool that gives developer
 
 Blockchain Browser is a React/Node.js web application with which a persistent database is not required. The Blockchain Browser "browses" the block store directly using the Fabric Node.js SDK. 
 
+# Byzantine-flu Full Stack Setup
+
+## Setup Steps
+1. Set up and run Byzantine Hyperledger Fabric:  https://github.com/in-the-keyhole/byzantine-flu
+
+> This project implements a HyperLedger blockchain network with chaincode that manages a ledger of Influenza tests. The chaincode implements functions to create and retrieve Influenza test results.
+
+2. Set up and run the Gateway:  https://github.com/in-the-keyhole/byzantine-gateway
+
+> The communication gateway to the Byzantine Hyperledger Fabric runtime
+
+3. Set up and run the UI:  https://github.com/in-the-keyhole/byzantine-flu-ui
+
+>  A website containing a map displaying the locations and concentrations of reported flu samples
+
+
+## Optional Steps:
+1. **-> (You are here)** Hyperledger Brower:  https://github.com/in-the-keyhole/byzantine-browser
+
+-----
+
 #### View a three-minute video of the Blockchain Browser in action [here](https://youtu.be/yu96eA8GstQ).
 
 Please see below for installation and startup instructions. 
