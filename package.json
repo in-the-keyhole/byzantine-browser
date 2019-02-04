@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "npm run setupKeystore && node app",
-    "setupKeystore": "rm -rf ~/.hfc-key-store && cp -r ./hfc-key-store ~/.hfc-key-store",
+    "setupKeystore": "rm -rf ~/.hfc-key-store && mkdir -p ~/.hfc-key-store && cp -r ./hfc-key-store ~/.hfc-key-store",
     "heroku-postbuild": "cd ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "start:dev": "cd ui/ && npm run build && npm start"
   },
