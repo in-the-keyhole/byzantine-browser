@@ -59,7 +59,7 @@ Here is an example public/private and user file in the `hfc-key-store` directory
 
 ```
     $ ./runApiServer.sh 
-    $ npm start:dev 
+    $ npm run start:dev 
 ```
 
 5. Browse to [`http://localhost:8080`](http://localhost:8080).
