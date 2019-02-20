@@ -6,6 +6,8 @@ Blockchain Browser is a React/Node.js web application with which a persistent da
 
 #### View a three-minute video of the Blockchain Browser in action [here](https://youtu.be/yu96eA8GstQ).
 
+#### Give a live version a try, here's a link to a browser deployed to Heroku and pointing to a reference Hyperledger Fabric reference network [here][(https://byzantine-browser.herokuapp.com)
+
 Please see below for installation and startup instructions. 
 
 ## Screenshots 
