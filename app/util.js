@@ -51,8 +51,9 @@ var connectChannel = function (channel_id) {
 
         // If network profile is included
         if (config.network_profile) {
+            const netprof = join(__dirname, config.network_profile);
             let netProfileStr = await fsExtra.readFile(netprof, 'utf8');
-            network_profile = JSON.parse(netProfile);
+            network_profile = JSON.parse(netProfileStr);
             client.loadFromConfig(network_profile);
             await client.initCredentialStores();
         }
