@@ -28,28 +28,30 @@ Please see below for installation and startup instructions.
 
 Note: Two useful tools for managing Node and Python versions are [nvm](https://github.com/creationix/nvm) and [pyenv](https://github.com/pyenv/pyenv).
 
-## Installation 
+## Installation
+
 1. Clone repo
-2. Install server and UI JavaScript modules 
+2. Install server and UI JavaScript modules
 
-
-```
-    $ npm install 
+```bash
+    $ npm install
     $ cd ui
-    $ npm install 
+    $ npm install
     $ cd ..
 ```
 
 3. The current keystore has credentials for the Hyperledger example networks. You can access other networks by modifying the `config.js` so that the `network_url` property points to a peer node address and an admin `USERID` property references an admin user and public/private keys located in the `hfc-key-store` folder.
 
-```
+```javascript
     module.exports = {
         port: process.env.PORT || 4001,
         host: process.env.HOST || "localhost",
         loglevel: process.env.LOGLEVEL || "info",
         wallet_path: process.env.KEYSTORE || "../hfc-key-store",
         user_id: process.env.USERID || "PeerAdmin",
-        network_url: process.env.NETWORK_URL || "grpc://localhost:7051"  
+        network_url: process.env.NETWORK_URL || "grpc://localhost:7051",
+        network_profile: process.env.NETWORKPROFILE || '',
+        peer_pem: process.env.PEER_PEM || ''
     }
 ```
 
@@ -68,7 +70,20 @@ Here is an example public/private and user file in the `hfc-key-store` directory
 
 Note: to change the port, edit file `./ui/package.json`.
 
+### Using TLS
+
+These three variables are used to enable TLS with the targeted peer (put them in a `.env` file in the root and replace the values for your network's):
+
+```bash
+NETWORKPROFILE=../connection/networkprofile.json
+PEER_PEM=-----BEGIN CERTIFICATE-----\nMIICb...
+SSL_TARGET_NAME_OVERRIDE=peer1...
+```
+
+Be sure to also replace the files in the folder `./hfc-key-store` with your keys.
+
 ## Feedback
+
 Please let us know if you have questions - asktheteam@keyholesoftware.com. 
 
 We at [Keyhole](https://keyholesoftware.com) are working to add new features all the time and would love your feedback.
