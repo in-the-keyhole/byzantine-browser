@@ -14,7 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+const fsExtra = require('fs-extra');
 var path = require('path');
+var join = path.join;
 var fs = require('fs');
 var util = require('util');
 var hfc = require('fabric-client');
@@ -35,6 +37,7 @@ var path = path.join(__dirname, config.wallet_path);
 var org = config.org;
 var pool = [];
 
+var network_profile = {};
 
 var connectChannel = function (channel_id) {
 
@@ -42,43 +45,53 @@ var connectChannel = function (channel_id) {
         logger.info("Create a client and set the wallet location");
         client = new hfc();
         return hfc.newDefaultKeyValueStore({ path: path });
-    }).then((wallet) => {
+    }).then(async (wallet) => {
         logger.info("Set wallet path, and associate user ", config.user_id, " with application");
         client.setStateStore(wallet);
-        return client.getUserContext(config.user_id, true);
+
+        // If network profile is included
+        if (config.network_profile) {
+            const netprof = join(__dirname, config.network_profile);
+            let netProfileStr = await fsExtra.readFile(netprof, 'utf8');
+            network_profile = JSON.parse(netProfileStr);
+            client.loadFromConfig(network_profile);
+            await client.initCredentialStores();
+        }
+
+        let user = await client.getUserContext(config.user_id, true);
+        return client.setUserContext(user);
     }).then((user) => {
-  
-        console.log("POOL"+pool.length);
+        console.log("POOL" + pool.length);
 
-       var channel = get(channel_id);
-
+        var channel = get(channel_id);
         logger.debug("Check user is enrolled, and set a query URL in the network");
         if (user === undefined || user.isEnrolled() === false) {
             logger.error("User not defined, or not enrolled - error");
         }
 
-    
-        if (channel == null ) {
-
+        if (channel == null) {
             try {
+                channel = client.newChannel(channel_id);
 
-             channel = client.newChannel(channel_id);  
-             peer = client.newPeer(config.network_url);
-            } catch (error) { 
-
-                  logger.error("Error creating new channel "+channel_id+error);
-                  return null;
-
-             }
-
+                if (config.peer_pem) {
+                    // If PEM is needed, include it
+                    peer = client.newPeer(config.network_url, {
+                        pem: config.peer_pem,
+                        'ssl-target-name-override': config.ssl_target_name_override
+                    });
+                } else {
+                    peer = client.newPeer(config.network_url);
+                }
+            } catch (error) {
+                logger.error("Error creating new channel " + channel_id + error);
+                return null;
+            }
 
             channel.addPeer(peer);
             channelid = channel_id;
             let channel_event_hub = channel.newChannelEventHub(peer);
 
-
-
-            add(channel_id,channel);
+            add(channel_id, channel);
             // keep the block_reg to unregister with later if needed
             let block_reg = channel_event_hub.registerBlockEvent((block) => {
                 logger.debug('Successfully received the block event - ' + JSON.stringify(block));
@@ -87,18 +100,18 @@ var connectChannel = function (channel_id) {
 
             }, (error) => {
                 logger.error('Failed to receive the block event ::' + error.toString());
-                
+
 
             });
 
-        
+
 
             channel_event_hub.connect(true);
 
 
             logger.info("Is Event Hub Connected " + channel_event_hub.isconnected());
             logger.info('Event Hub Registerd: ' + block_reg);
-           
+
 
 
         }
@@ -117,31 +130,30 @@ var connectChannel = function (channel_id) {
 var get = function (cid) {
 
 
-    for (var i = 0 ; i < pool.length; i++) {
-    
-       if (pool[i].channelid === cid)
-           { return pool[i].channel; }   
-     
+    for (var i = 0; i < pool.length; i++) {
+
+        if (pool[i].channelid === cid) { return pool[i].channel; }
+
     }
 
     return null;
 
 }
 
-var add = function(id,c) {
+var add = function (id, c) {
 
     let add = true;
-    for (var i = 0; i < pool.length ; i++) {
-        if ( pool[i].channelid == id) {
+    for (var i = 0; i < pool.length; i++) {
+        if (pool[i].channelid == id) {
             add = false;
-            break; 
+            break;
         }
 
     }
 
     if (add) {
-      console.log("*** Item  not found adding");         
-      pool.push({channelid: id, channel: c} ); 
+        console.log("*** Item  not found adding");
+        pool.push({ channelid: id, channel: c });
     } else {
         console.log("****Item found")
     }
@@ -149,25 +161,24 @@ var add = function(id,c) {
 }
 
 
-var getClient = function() {
-        return client;
+var getClient = function () {
+    return client;
 }
 
-var removeChannel = function(cid) {
+var removeChannel = function (cid) {
 
     var index = -1;
-    for (var i = 0 ; i < pool.length; i++) {
-    
-        if (pool[i].channelid === cid)
-            { index = i }   
-      
-     }
- 
-     if (index >=0 ){
-         pool.splice(index,1);
-     }
+    for (var i = 0; i < pool.length; i++) {
 
-     return;
+        if (pool[i].channelid === cid) { index = i }
+
+    }
+
+    if (index >= 0) {
+        pool.splice(index, 1);
+    }
+
+    return;
 
 }
 

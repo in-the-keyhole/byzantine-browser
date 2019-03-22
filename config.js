@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = {
     port: process.env.PORT || 4001,
@@ -22,6 +23,8 @@ module.exports = {
     wallet_path: process.env.KEYSTORE || "../hfc-key-store",
     user_id: process.env.USERID || "PeerAdmin",
     network_url: process.env.NETWORK_URL || "grpc://localhost:7051",
-    event_url: process.env.EVENT_URL || "grpc://localhost:7052"
-    
+    event_url: process.env.EVENT_URL || "grpc://localhost:7052",
+    network_profile: process.env.NETWORKPROFILE || '',
+    peer_pem: process.env.PEER_PEM || '',
+    ssl_target_name_override: process.env.SSL_TARGET_NAME_OVERRIDE || ''
 }

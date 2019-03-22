@@ -27,3 +27,6 @@ yarn-error.log*
 
 .vscode
 /.history
+
+.history
+/.env
