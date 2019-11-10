@@ -59,6 +59,10 @@ Here is an example public/private and user file in the `hfc-key-store` directory
 
 ![](images/keystore.png)
 
+The server startup script copies credentials from the `wallet-path` config.js `hfc-key-store` value to the users home `~/hfc-key-store` directory. Make sure the user home directory is writable.
+
+Access credentials are created for a network by enrolling a user here's a [https://hlf.readthedocs.io/en/v1.1.0/write_first_app.html](LINK) describing how a user can be enrolled and credentials generated.  Go to `Enroll the Admin User` section.
+
 4. Start the API Server and UI server with the following commands:
 
 ```
