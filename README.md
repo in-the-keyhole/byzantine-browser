@@ -21,7 +21,7 @@ Please see below for installation and startup instructions.
 ![](images/blockbrowsermetrics.png)
 
 ## Requirements
-* [Node](https://nodejs.org/en/download/) 8.9.x or above
+* [Node](https://nodejs.org/en/download/) 8.15.0 is recommended
 * `Windows OS Only` - [Python](https://www.python.org/downloads/) 2.7+ (v3+ not supported)
 * `Windows OS Only` - For 'rm' and 'cp' commands, use Powershell or add Git to PATH (C:\Program Files\Git\usr\bin) or install Cygwin.
 * Access to HyperLedger Fabric network. Here's an example: [khs-lab-results-blockchain](https://github.com/in-the-keyhole/khs-lab-results-blockchain)
